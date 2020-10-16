@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "971646408819",
+    "firebase_url": "https://learning-app-8c6fb.firebaseio.com",
+    "project_id": "learning-app-8c6fb",
+    "storage_bucket": "learning-app-8c6fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971646408819:android:10e7e482b741ce152b7206",
+        "android_client_info": {
+          "package_name": "com.avishkar.learning_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971646408819-hnnpb93nvmide06uddv0f3o0g7hf7b5g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBe4r04RgwlElbrcOpV3CNgOcVdOpkQ6DA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "971646408819-hnnpb93nvmide06uddv0f3o0g7hf7b5g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
