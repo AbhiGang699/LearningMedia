@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/screens/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './image_input.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/authentication.dart';
@@ -18,7 +19,7 @@ class _AuthFormState extends State<AuthForm> {
   FirebaseAuth auth = FirebaseAuth.instance;
   final Authentication obj = new Authentication();
   FirebaseUser user;
-  bool isloading = false;
+  bool _isloading = false;
 
   var temp = TextEditingController();
   String _userName, _email, _fullName, _password;
@@ -65,7 +66,7 @@ class _AuthFormState extends State<AuthForm> {
           ),
         );
         setState(() {
-          isloading = false;
+          _isloading = false;
         });
         return;
       }
@@ -77,17 +78,17 @@ class _AuthFormState extends State<AuthForm> {
           .child(user.uid + '.jpg');
       await ref.putFile(_storedImage).onComplete;
 
-      final url = await ref.getDownloadURL();
+      final _url = await ref.getDownloadURL();
 
       await Firestore.instance.collection('users').document(user.uid).setData({
         'username': _userName,
         'email': _email,
-        'image_url': url,
+        'image_url': _url,
         'fullname': _fullName,
       });
     } catch (e) {
       setState(() {
-        isloading = false;
+        _isloading = false;
       });
     }
     // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(user)));
@@ -95,7 +96,17 @@ class _AuthFormState extends State<AuthForm> {
 
   void login() async {
     try {
-      await obj.signIn(_email, _password);
+      FirebaseUser user = await obj.signIn(_email, _password);
+      SharedPreferences s = await SharedPreferences.getInstance();
+      final QuerySnapshot result = await Firestore.instance
+          .collection('users')
+          .where('email', isEqualTo: _email)
+          .getDocuments();
+      final List<DocumentSnapshot> doc = result.documents;
+
+      s.setString('username', doc[0]['username']);
+      s.setString('fullname', doc[0]['fullname']);
+      s.setString('imageUrl', doc[0]['image_url']);
     } catch (e) {
       Scaffold.of(context).showSnackBar(
         SnackBar(
@@ -105,21 +116,34 @@ class _AuthFormState extends State<AuthForm> {
       );
 
       setState(() {
-        isloading = false;
+        _isloading = false;
       });
     }
     // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(user)));
   }
 
-  void _trySave(BuildContext context) {
+  void _trySave(BuildContext context) async {
     final isValid = _formKey.currentState.validate();
 
     if (isValid) {
       setState(() {
-        isloading = true;
+        _isloading = true;
       });
       _formKey.currentState.save();
       if (!_isLogin) {
+        // bool _isunique= await check(_userName);
+        if (await check(_userName) == false) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Username already used'),
+              backgroundColor: Theme.of(context).errorColor,
+            ),
+          );
+          setState(() {
+            _isloading = false;
+          });
+          return;
+        }
         register(context);
       } else {
         login();
@@ -280,7 +304,7 @@ class _AuthFormState extends State<AuthForm> {
                         Divider(
                           height: 10,
                         ),
-                        isloading
+                        _isloading
                             ? CircularProgressIndicator()
                             : RaisedButton.icon(
                                 onPressed: () => _trySave(context),

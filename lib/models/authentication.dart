@@ -14,7 +14,7 @@ class Authentication {
 
     final FirebaseUser currentUser = await auth.currentUser();
     assert(user.uid == currentUser.uid);
-    // return user;
+    return user;
   }
 
   Future<FirebaseUser> registerUser(String mail, String pass) async {

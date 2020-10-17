@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   // final FirebaseUser user;
@@ -19,6 +20,20 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Profile(),
     ),
   ];
+  static List<DocumentSnapshot> _doc;
+  FirebaseUser user;
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    user = await FirebaseAuth.instance.currentUser();
+    final QuerySnapshot result = await Firestore.instance
+        .collection('users')
+        .where('email', isEqualTo: user.email)
+        .getDocuments();
+    _doc = result.documents;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,13 +49,43 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               icon: Icon(Icons.exit_to_app_sharp),
               onPressed: () {
-                FirebaseAuth.instance.signOut();
+                return showDialog<void>(
+                  context: context,
+                  barrierDismissible: false, // user must tap button!
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Logging Out?'),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: <Widget>[
+                            Text('Are you sure to logout?'),
+                          ],
+                        ),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('Yes'),
+                          onPressed: () {
+                            FirebaseAuth.instance.signOut();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('No'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           // Text('Dubious'),
           if (_index == 0)
             IconButton(
-              icon: Icon(Icons.apps),
+              icon: Icon(Icons.add),
               onPressed: () {},
             ),
         ],
