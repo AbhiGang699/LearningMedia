@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/add_article.dart';
 import '../components/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -86,7 +87,13 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_index == 0)
             IconButton(
               icon: Icon(Icons.add),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AddArticle(),
+                  ),
+                );
+              },
             ),
         ],
         centerTitle: true,
