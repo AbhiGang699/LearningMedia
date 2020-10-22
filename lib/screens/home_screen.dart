@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/add_article.dart';
+import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import '../components/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,19 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Profile(),
     ),
   ];
-  static List<DocumentSnapshot> _doc;
-  FirebaseUser user;
-  @override
-  void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    user = await FirebaseAuth.instance.currentUser();
-    final QuerySnapshot result = await Firestore.instance
-        .collection('users')
-        .where('email', isEqualTo: user.email)
-        .getDocuments();
-    _doc = result.documents;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +73,16 @@ class _HomeScreenState extends State<HomeScreen> {
           // Text('Dubious'),
           if (_index == 0)
             IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {},
+            ),
+          if (_index == 0)
+            IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => AddArticle(),
+                    builder: (context) => EditorPage(),
                   ),
                 );
               },
