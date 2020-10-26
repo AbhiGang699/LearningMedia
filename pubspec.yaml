@@ -29,6 +29,8 @@ dependencies:
   firebase_storage: ^3.1.6
   image_picker: ^0.6.5+3
   shared_preferences:
+  zefyr:
+  quill_delta:
 
 dev_dependencies:
   flutter_test:
