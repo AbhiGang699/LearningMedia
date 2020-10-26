@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/components/article_card.dart';
+import 'file:///C:/Users/Abhi/AndroidStudioProjects/flutter_learning_app/lib/models/article_card.dart';
 
 class Feed extends StatefulWidget{
   @override
