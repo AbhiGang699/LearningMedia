@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
   List<Widget> _body = [
     Center(
-      child: Text('Articles'),
+      child: Text('AbhiArticles'),
     ),
     Center(
       child: Profile(),
