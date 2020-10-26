@@ -88,13 +88,20 @@ class CreateNote extends State<EditorPage> {
                 child: Text('Post'),
                 onPressed: () async {
                   FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                  var result = await Firestore.instance
+                      .collection('users').document(user.uid).get();
+                  print(result.data);
+
+
                   await Firestore.instance
                       .collection('articles')
                       .document(DateTime.now().toString() + user.uid)
                       .setData({
                     'user': user.uid,
                     'body': jsonEncode(_controller.document),
-                    'tag': _selectedtag
+                    'tag': _selectedtag,
+                    'username': result.data['username'],
+                    'caption': _controller.document.toPlainText().substring(0,20)+'...'
                   });
                   Navigator.of(context).pop();
                 },

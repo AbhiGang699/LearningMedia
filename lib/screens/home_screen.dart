@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _body = [
     Center(
       child: Feed(),
+
     ),
     Center(
       child: Profile(),
