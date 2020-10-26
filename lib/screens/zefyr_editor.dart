@@ -4,21 +4,17 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/components/image.dart';
 import '../components/tagdropdown.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
-// DBHelper helper=DBHelper();
 class EditorPage extends StatefulWidget {
-  // SavedNotes _savedNotes;
-  // EditorPage(this._savedNotes);
   @override
   State<StatefulWidget> createState() => CreateNote();
 }
 
 class CreateNote extends State<EditorPage> {
-  // SavedNotes _notes;
-  // createNote(this._notes);
   String _selectedtag = 'Technology';
   void setTag(String value) {
     setState(() {
@@ -43,6 +39,7 @@ class CreateNote extends State<EditorPage> {
             padding: EdgeInsets.all(5.0),
             controller: _controller,
             focusNode: _focusNode,
+            imageDelegate: CustomImageDelegate(),
           ),
         ),
       ),
@@ -58,16 +55,6 @@ class CreateNote extends State<EditorPage> {
     _controller = ZefyrController(document);
     _focusNode = FocusNode();
   }
-
-  // NotusDocument _loadDocument(){
-  //   if(_notes.id==null) {
-  //     final Delta delta = Delta()..insert("Insert text here\n"); //import quill_delta
-  //     return NotusDocument.fromDelta(delta);
-  //   }
-  //   else{
-  //     return NotusDocument.fromJson(jsonDecode(_notes.content));
-  //   }
-  // }
 
   Future<void> save() async {
     return showDialog<void>(
@@ -96,6 +83,8 @@ class CreateNote extends State<EditorPage> {
                     'body': jsonEncode(_controller.document),
                     'tag': _selectedtag
                   });
+                  print(jsonEncode(_controller.document.toPlainText()));
+                  Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
               ),
