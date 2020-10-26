@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../components/feed.dart';
 import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import '../components/profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   // final FirebaseUser user;
@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
   List<Widget> _body = [
     Center(
-      child: Text('Articles'),
+      child: Feed(),
     ),
     Center(
       child: Profile(),
