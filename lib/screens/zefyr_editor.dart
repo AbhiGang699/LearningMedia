@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../components/tagdropdown.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
+import 'package:intl/intl.dart';
 
 // DBHelper helper=DBHelper();
 class EditorPage extends StatefulWidget {
@@ -89,9 +90,10 @@ class CreateNote extends State<EditorPage> {
                 onPressed: () async {
                   FirebaseUser user = await FirebaseAuth.instance.currentUser();
                   var result = await Firestore.instance
-                      .collection('users').document(user.uid).get();
+                      .collection('users')
+                      .document(user.uid)
+                      .get();
                   print(result.data);
-
 
                   await Firestore.instance
                       .collection('articles')
@@ -101,7 +103,10 @@ class CreateNote extends State<EditorPage> {
                     'body': jsonEncode(_controller.document),
                     'tag': _selectedtag,
                     'username': result.data['username'],
-                    'caption': _controller.document.toPlainText().substring(0,20)+'...'
+                    'date': DateFormat.yMMMMd('en_US').format(DateTime.now()).toString(),
+                    'caption':
+                        _controller.document.toPlainText().substring(0, 20) +
+                            '...'
                   });
                   Navigator.of(context).pop();
                 },
