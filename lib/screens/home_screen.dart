@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../components/feed.dart';
 import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import '../components/profile.dart';
+<<<<<<< HEAD
 import '../components/feed.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+=======
+>>>>>>> 50474cb132c834acdbf5cc1fb450d8f2c8e6633b
 
 class HomeScreen extends StatefulWidget {
   // final FirebaseUser user;
