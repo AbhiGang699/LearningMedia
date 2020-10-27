@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../models/article_card.dart';
+import 'article_card.dart';
 import 'package:intl/intl.dart';
 
 class Feed extends StatefulWidget {
@@ -24,21 +24,22 @@ class _FeedState extends State<Feed> {
           await Firestore.instance.collection("articles").getDocuments();
       _arti = art.documents;
       _urls.clear();
-      for(int i=0;i<_arti.length;i++){
-        String id=_arti[i].data["user"];
-        DocumentSnapshot result=await Firestore.instance.collection("users").document(id).get();
-        var temp=result.data["image_url"];
+      for (int i = 0; i < _arti.length; i++) {
+        String id = _arti[i].data["user"];
+        DocumentSnapshot result =
+            await Firestore.instance.collection("users").document(id).get();
+        var temp = result.data["image_url"];
         _urls.add(temp.toString());
       }
       if (_len < _arti.length) {
         _len = _arti.length;
         setState(() {});
       }
-      return _arti;
     } catch (e) {
       print("sorry couldn't fetch data");
       print(e);
     }
+    return _arti;
   }
 
   @override
@@ -52,7 +53,7 @@ class _FeedState extends State<Feed> {
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   bool isAuthor = (_uid == _arti[index]["user"]);
-                  return ArticleCard(_arti[index], isAuthor,_urls[index]);
+                  return ArticleCard(_arti[index], isAuthor, _urls[index]);
                 },
                 itemCount: _arti.length,
               ),

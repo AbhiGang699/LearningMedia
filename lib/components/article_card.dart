@@ -1,18 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../components/showArticle.dart';
 
-class ArticleCard extends StatelessWidget {
+class ArticleCard extends StatefulWidget {
   final DocumentSnapshot doc;
   final bool isAuthor;
   final url;
+
   ArticleCard(this.doc, this.isAuthor, this.url);
 
   @override
+  _ArticleCardState createState() => _ArticleCardState();
+}
+
+class _ArticleCardState extends State<ArticleCard> {
+  bool _isPressed = false;
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => print("${doc.data["user"]}"),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ShowArticle(this.widget.doc,this.widget.isAuthor, this.widget.url),
+          ),
+        );
+      },
       child: Card(
         elevation: 10,
         shadowColor: Colors.grey,
@@ -23,18 +35,18 @@ class ArticleCard extends StatelessWidget {
           children: [
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(url),
+                backgroundImage: NetworkImage(this.widget.url),
               ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doc.data["username"],
+                    this.widget.doc.data["username"],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${doc.data["date"]}",
+                    "${this.widget.doc.data["date"]}",
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 10,
@@ -42,19 +54,31 @@ class ArticleCard extends StatelessWidget {
                   ),
                 ],
               ),
-              trailing: isAuthor
+              trailing: this.widget.isAuthor
                   ? IconButton(
                       iconSize: 20,
                       icon: Icon(Icons.edit),
                       onPressed: () => print("edit"),
                       color: Colors.grey,
                     )
-                  : null,
+                  :  IconButton(
+                iconSize: 20,
+                icon: _isPressed
+                    ? Icon(Icons.star)
+                    : Icon(Icons.star_border),
+                onPressed: () {
+                  print("bookmarked");
+                  setState(() {
+                    _isPressed=!_isPressed;
+                  });
+                },
+                color: Colors.grey,
+              ),
             ),
             Padding(
               padding: EdgeInsets.all(8),
               child: Text(
-                doc.data["caption"],
+                this.widget.doc.data["caption"],
                 style: TextStyle(color: Colors.black),
                 textAlign: TextAlign.left,
               ),
@@ -63,7 +87,7 @@ class ArticleCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "tag : ${doc.data["tag"]}",
+                  "tag : ${this.widget.doc.data["tag"]}",
                   style: TextStyle(fontSize: 10),
                 ),
                 SizedBox(
