@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import '../screens/login_screen.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -18,7 +16,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    if (isloading)
+    if (isloading) {
       FirebaseAuth.instance.currentUser().then((user) {
         Firestore.instance
             .collection('users')
@@ -35,6 +33,7 @@ class _ProfileState extends State<Profile> {
           });
         });
       });
+    }
     return isloading
         ? Center(child: CircularProgressIndicator())
         : Container(
@@ -50,7 +49,6 @@ class _ProfileState extends State<Profile> {
                       backgroundColor: Colors.black,
                     ),
                     Text(name),
-                    // Text('data'),
                   ],
                 ),
                 Expanded(

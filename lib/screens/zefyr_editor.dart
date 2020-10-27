@@ -8,6 +8,7 @@ import 'package:flutter_complete_guide/components/image.dart';
 import '../components/tagdropdown.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
+import 'package:intl/intl.dart';
 
 class EditorPage extends StatefulWidget {
   @override
@@ -75,13 +76,24 @@ class CreateNote extends State<EditorPage> {
                 child: Text('Post'),
                 onPressed: () async {
                   FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                  var result = await Firestore.instance
+                      .collection('users')
+                      .document(user.uid)
+                      .get();
+                  print(result.data);
+
                   await Firestore.instance
                       .collection('articles')
                       .document(DateTime.now().toString() + user.uid)
                       .setData({
                     'user': user.uid,
                     'body': jsonEncode(_controller.document),
-                    'tag': _selectedtag
+                    'tag': _selectedtag,
+                    'username': result.data['username'],
+                    'date': DateFormat.yMMMMd('en_US').format(DateTime.now()).toString(),
+                    'caption':
+                        _controller.document.toPlainText().substring(0, 20) +
+                            '...'
                   });
                   print(jsonEncode(_controller.document.toPlainText()));
                   Navigator.of(context).pop();

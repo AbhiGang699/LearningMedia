@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/components/article_card.dart';
+import 'article_card.dart';
+import 'package:intl/intl.dart';
 
 class Feed extends StatefulWidget {
   @override
@@ -10,9 +11,16 @@ class Feed extends StatefulWidget {
 }
 
 class _FeedState extends State<Feed> {
+<<<<<<< HEAD
   bool _isLoading = true;
+=======
+>>>>>>> a3e951b2c7111be9bc4446d273b156954928b57c
   List<DocumentSnapshot> _arti;
+  List<String> _urls = List<String>();
+  var _uid;
+  var _len = 0;
 
+<<<<<<< HEAD
   Future<List<DocumentSnapshot>> getArticles(BuildContext context) async {
     try {
       QuerySnapshot art =
@@ -20,14 +28,37 @@ class _FeedState extends State<Feed> {
       _arti = art.documents;
       print(_arti[0].data);
       return _arti;
+=======
+  Future<List<DocumentSnapshot>> getArticles() async {
+    try {
+      final FirebaseUser _user = await FirebaseAuth.instance.currentUser();
+      _uid = _user.uid;
+      QuerySnapshot art =
+          await Firestore.instance.collection("articles").getDocuments();
+      _arti = art.documents;
+      _urls.clear();
+      for (int i = 0; i < _arti.length; i++) {
+        String id = _arti[i].data["user"];
+        DocumentSnapshot result =
+            await Firestore.instance.collection("users").document(id).get();
+        var temp = result.data["image_url"];
+        _urls.add(temp.toString());
+      }
+      if (_len < _arti.length) {
+        _len = _arti.length;
+        setState(() {});
+      }
+>>>>>>> a3e951b2c7111be9bc4446d273b156954928b57c
     } catch (e) {
       print("sorry couldn't fetch data");
-      return null;
+      print(e);
     }
+    return _arti;
   }
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     getArticles(context);
     return FutureBuilder(
       future: getArticles(context),
@@ -49,6 +80,26 @@ class _FeedState extends State<Feed> {
                   ),
                 ),
     );
+=======
+    return FutureBuilder(
+        future: getArticles(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return RefreshIndicator(
+              onRefresh: getArticles,
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  bool isAuthor = (_uid == _arti[index]["user"]);
+                  return ArticleCard(_arti[index], isAuthor, _urls[index]);
+                },
+                itemCount: _arti.length,
+              ),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
+>>>>>>> a3e951b2c7111be9bc4446d273b156954928b57c
   }
 }
 

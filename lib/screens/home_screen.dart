@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import './zefyr_editor.dart';
+import '../components/searchUsers.dart';
 import '../components/feed.dart';
-import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import '../components/profile.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _body = [
     Center(
       child: Feed(),
+    ),
+    Center(
+      child: ExploreUsers(),
     ),
     Center(
       child: Profile(),
@@ -33,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // ),
       appBar: AppBar(
         actions: [
-          if (_index == 1)
+          if (_index == 2)
             IconButton(
               icon: Icon(Icons.exit_to_app_sharp),
               onPressed: () {
@@ -95,20 +100,27 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _body[_index],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
+        unselectedIconTheme: IconThemeData(color: Colors.black45),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            title: Text("Feed"),
-            backgroundColor: Colors.orange,
+            label: "Feed",
+            backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.article_sharp),
-            title: Text('Profile'),
-            backgroundColor: Colors.orange,
+            icon: Icon(Icons.youtube_searched_for),
+            label: "Explore",
+            backgroundColor: Colors.blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_rounded),
+            label: "Profile",
+            backgroundColor: Colors.blue,
           ),
         ],
         currentIndex: _index,
         onTap: (value) {
+          print(value);
           setState(() {
             _index = value;
           });
