@@ -58,6 +58,7 @@ class CreateNote extends State<EditorPage> {
   }
 
   Future<void> save() async {
+    var _text = TextEditingController();
     return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -67,6 +68,10 @@ class CreateNote extends State<EditorPage> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
+                  TextField(
+                    controller: _text,
+                    decoration: InputDecoration(labelText: 'Enter title'),
+                  ),
                   TagDropDownMenu(setTag),
                 ],
               ),
@@ -86,11 +91,14 @@ class CreateNote extends State<EditorPage> {
                       .collection('articles')
                       .document(DateTime.now().toString() + user.uid)
                       .setData({
+                    'title': _text.text,
                     'user': user.uid,
                     'body': jsonEncode(_controller.document),
                     'tag': _selectedtag,
                     'username': result.data['username'],
-                    'date': DateFormat.yMMMMd('en_US').format(DateTime.now()).toString(),
+                    'date': DateFormat.yMMMMd('en_US')
+                        .format(DateTime.now())
+                        .toString(),
                     'caption':
                         _controller.document.toPlainText().substring(0, 20) +
                             '...'
