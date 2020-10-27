@@ -16,7 +16,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    if (isloading)
+    if (isloading) {
       FirebaseAuth.instance.currentUser().then((user) {
         Firestore.instance
             .collection('users')
@@ -33,6 +33,7 @@ class _ProfileState extends State<Profile> {
           });
         });
       });
+    }
     return isloading
         ? Center(child: CircularProgressIndicator())
         : Container(
