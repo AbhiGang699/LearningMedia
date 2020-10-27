@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../components/showArticle.dart';
+import '../screens/showArticle.dart';
 
 class ArticleCard extends StatefulWidget {
   final DocumentSnapshot doc;
@@ -48,7 +48,7 @@ class _ArticleCardState extends State<ArticleCard> {
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${this.widget.doc.data["date"]}",
+                    "${this.widget.doc.data['username']}  ${this.widget.doc.data["date"]} ",
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 10,
