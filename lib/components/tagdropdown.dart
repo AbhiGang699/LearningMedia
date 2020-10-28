@@ -13,23 +13,6 @@ class _TagDropDownMenuState extends State<TagDropDownMenu> {
   String dropdownValue = 'Technology';
   @override
   Widget build(BuildContext context) {
-    // return DropdownButton(
-    //   value: _selectedtag,
-    //   isDense: true,
-    //   items: _tag
-    //       .map(
-    //         (e) => DropdownMenuItem(
-    //           key: ValueKey(_tag.indexOf(e)),
-    //           child: Text(e),
-    //         ),
-    //       )
-    //       .toList(),
-    //   onChanged: (e) {
-    //     setState(() {
-    //       _selectedtag = _tag.indexOf(e);
-    //     });
-    //   },
-    // );
     return DropdownButton<String>(
       value: dropdownValue,
       icon: Icon(Icons.arrow_downward),

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'article_card.dart';
+import '../models/article_card.dart';
 import 'package:intl/intl.dart';
 
 class Feed extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../components/showArticle.dart';
+import '../screens/showArticle.dart';
 
 class ArticleCard extends StatefulWidget {
   final DocumentSnapshot doc;
@@ -21,7 +21,7 @@ class _ArticleCardState extends State<ArticleCard> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ShowArticle(this.widget.doc,this.widget.isAuthor, this.widget.url),
+            builder: (context) => ViewerPage(this.widget.doc),
           ),
         );
       },
@@ -41,12 +41,14 @@ class _ArticleCardState extends State<ArticleCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    this.widget.doc.data["username"],
+                    this.widget.doc.data["title"] == null
+                        ? this.widget.doc.data['username']
+                        : this.widget.doc.data["title"],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${this.widget.doc.data["date"]}",
+                    "${this.widget.doc.data['username']}  ${this.widget.doc.data["date"]} ",
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 10,
@@ -61,19 +63,19 @@ class _ArticleCardState extends State<ArticleCard> {
                       onPressed: () => print("edit"),
                       color: Colors.grey,
                     )
-                  :  IconButton(
-                iconSize: 20,
-                icon: _isPressed
-                    ? Icon(Icons.star)
-                    : Icon(Icons.star_border),
-                onPressed: () {
-                  print("bookmarked");
-                  setState(() {
-                    _isPressed=!_isPressed;
-                  });
-                },
-                color: Colors.grey,
-              ),
+                  : IconButton(
+                      iconSize: 20,
+                      icon: _isPressed
+                          ? Icon(Icons.star)
+                          : Icon(Icons.star_border),
+                      onPressed: () {
+                        print("bookmarked");
+                        setState(() {
+                          _isPressed = !_isPressed;
+                        });
+                      },
+                      color: Colors.grey,
+                    ),
             ),
             Padding(
               padding: EdgeInsets.all(8),
@@ -87,7 +89,7 @@ class _ArticleCardState extends State<ArticleCard> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "tag : ${this.widget.doc.data["tag"]}",
+                  "${this.widget.doc.data["tag"]}",
                   style: TextStyle(fontSize: 10),
                 ),
                 SizedBox(

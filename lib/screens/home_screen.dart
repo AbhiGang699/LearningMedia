@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import './zefyr_editor.dart';
-import '../components/searchUsers.dart';
-import '../components/feed.dart';
-import '../components/profile.dart';
+import 'searchUsers.dart';
+import 'feed.dart';
+import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
   // final FirebaseUser user;
@@ -30,12 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: Center(
-      //   child: IconButton(
-      //     icon: Icon(Icons.exit_to_app_outlined),
-      //     onPressed: () {},
-      //   ),
-      // ),
       appBar: AppBar(
         actions: [
           if (_index == 2)
