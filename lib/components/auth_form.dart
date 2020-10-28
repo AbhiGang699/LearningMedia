@@ -85,13 +85,13 @@ class _AuthFormState extends State<AuthForm> {
         'email': _email,
         'image_url': _url,
         'fullname': _fullName,
+        'followers': 0,
       });
     } catch (e) {
       setState(() {
         _isloading = false;
       });
     }
-    // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(user)));
   }
 
   void login() async {
