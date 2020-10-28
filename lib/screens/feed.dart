@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/article_card.dart';
-import 'package:intl/intl.dart';
 
 class Feed extends StatefulWidget {
   @override
@@ -31,7 +30,7 @@ class _FeedState extends State<Feed> {
         var temp = result.data["image_url"];
         _urls.add(temp.toString());
       }
-      if (_len < _arti.length) {
+      if (_len != _arti.length) {
         _len = _arti.length;
         setState(() {});
       }

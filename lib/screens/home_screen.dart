@@ -15,20 +15,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
-  List<Widget> _body = [
-    Center(
-      child: Feed(),
-    ),
-    Center(
-      child: ExploreUsers(),
-    ),
-    Center(
-      child: Profile(),
-    ),
-  ];
+  String _uid;
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.currentUser().then((value) => _uid = value.uid);
+    List<Widget> _body = [
+      Center(
+        child: Feed(),
+      ),
+      Center(
+        child: ExploreUsers(),
+      ),
+      Center(
+        child: Profile(_uid),
+      ),
+    ];
     return Scaffold(
       appBar: AppBar(
         actions: [
