@@ -44,7 +44,8 @@ class _FeedState extends State<Feed> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getArticles(),
+        future: getArticles()
+        ,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return RefreshIndicator(
