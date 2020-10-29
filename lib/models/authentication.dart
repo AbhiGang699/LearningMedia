@@ -46,4 +46,14 @@ class Authentication {
     print(ans);
     return ans;
   }
+
+  Future<List<DocumentSnapshot>> getUsers() async {
+    QuerySnapshot result = await Firestore.instance.collection("users").getDocuments();
+    List<DocumentSnapshot> _users=result.documents;
+    return _users;
+  }
+
+  Future<List<DoucmentSnapshot>> getOtherUsers async {
+
+}
 }
