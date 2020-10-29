@@ -86,10 +86,10 @@ class CreateNote extends State<EditorPage> {
                       .document(user.uid)
                       .get();
                   print(result.data);
-                  String id = DateTime.now().toString() + user.uid;
+                  String _time = DateTime.now().toString();
                   await Firestore.instance
                       .collection('articles')
-                      .document(id)
+                      .document(_time + user.uid)
                       .setData({
                     'title': _text.text,
                     'user': user.uid,
@@ -99,7 +99,7 @@ class CreateNote extends State<EditorPage> {
                     'date': DateFormat.yMMMMd('en_US')
                         .format(DateTime.now())
                         .toString(),
-                    'id': id,
+                    'time': _time,
                     'caption':
                         _controller.document.toPlainText().substring(0, 20) +
                             '...'

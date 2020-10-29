@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/components/image.dart';
+import 'package:flutter_complete_guide/screens/comment_screen.dart';
 import 'package:zefyr/zefyr.dart';
 
 class ViewerPage extends StatefulWidget {
@@ -18,6 +19,28 @@ class ViewNote extends State<ViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.thumb_up_alt_outlined),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.thumb_down_alt_outlined),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.message),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CommentScreen(widget.article),
+                ));
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(widget.article['title'] == null
             ? "View Note"

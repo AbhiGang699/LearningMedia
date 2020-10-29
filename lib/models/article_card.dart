@@ -34,21 +34,16 @@ class _ArticleCardState extends State<ArticleCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(this.widget.url),
-              ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    this.widget.doc.data["title"] == null
-                        ? this.widget.doc.data['username']
-                        : this.widget.doc.data["title"],
+                    this.widget.doc.data["title"],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${this.widget.doc.data['username']}  ${this.widget.doc.data["date"]} ",
+                    "${this.widget.doc.data["date"]}  ${this.widget.doc.data['tag']} ",
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 10,
@@ -88,8 +83,14 @@ class _ArticleCardState extends State<ArticleCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(this.widget.url),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
                 Text(
-                  "${this.widget.doc.data["tag"]}",
+                  "${this.widget.doc.data["username"]}",
                   style: TextStyle(fontSize: 10),
                 ),
                 SizedBox(
