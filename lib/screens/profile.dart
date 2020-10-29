@@ -69,6 +69,22 @@ class _ProfileState extends State<Profile> {
                     Text(name),
                   ],
                 ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    RaisedButton(
+                      onPressed: null,
+                      child: Text(" Followers "),
+                    ),
+                    RaisedButton(
+                      onPressed: null,
+                      child: Text(" Following "),
+                    )
+                  ],
+                ),
                 Expanded(
                   child: Center(
                     child: FutureBuilder(

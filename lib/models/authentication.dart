@@ -36,4 +36,14 @@ class Authentication {
     if (documents.length > 0) return false;
     return true;
   }
+
+  Future<bool> doesFollow(String celeb,String fan) async{
+    final QuerySnapshot result=await Firestore.instance.collection("follow").where("celeb",isEqualTo: celeb).where("fan",isEqualTo: fan).getDocuments();
+    List<DocumentSnapshot> doc=result.documents;
+    bool ans;
+    if(doc.isEmpty) ans=false;
+    else ans=true;
+    print(ans);
+    return ans;
+  }
 }

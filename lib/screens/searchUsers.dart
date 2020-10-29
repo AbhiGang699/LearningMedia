@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../models/authentication.dart';
+import 'package:flutter_complete_guide/components/follow_botton.dart';
 
 class ExploreUsers extends StatefulWidget {
   @override
@@ -10,12 +12,15 @@ class ExploreUsers extends StatefulWidget {
 
 class _ExploreUsersState extends State<ExploreUsers> {
   List<DocumentSnapshot> _users;
+  List<bool> follow = List<bool>();
+  final obj = new Authentication();
+  FirebaseUser _cu;
 
   Future<List<DocumentSnapshot>> getUsers() async {
     QuerySnapshot result =
         await Firestore.instance.collection("users").getDocuments();
     _users = result.documents;
-    final FirebaseUser _cu = await FirebaseAuth.instance.currentUser();
+    _cu = await FirebaseAuth.instance.currentUser();
     final String _c = _cu.email;
     for (int i = 0; i < _users.length; i++) {
       if (_users[i].data["email"] == _c) {
@@ -23,11 +28,19 @@ class _ExploreUsersState extends State<ExploreUsers> {
         break;
       }
     }
+    for (int i = 0; i < _users.length; i++) {
+      if (await obj.doesFollow(_users[i].data["email"], _cu.email) == true) {
+        follow.add(true);
+      } else {
+        follow.add(false);
+      }
+    }
     return _users;
   }
 
   @override
   Widget build(BuildContext context) {
+    getUsers();
     return FutureBuilder(
         future: getUsers(),
         builder: (context, snapshot) {
@@ -76,12 +89,17 @@ class _ExploreUsersState extends State<ExploreUsers> {
                             ),
                           ],
                         ),
-                        trailing: FlatButton.icon(
-                          onPressed: null,
-                          icon: Icon(Icons.add_circle_outline),
-                          label: Text("Follow"),
-                          color: Colors.green,
-                        ),
+                        trailing: follow[index]
+                            ? Text("Un follow")
+                            : GestureDetector(
+                                child: Follow(_users[index].data["email"],_cu.email),
+                                onTap: () {
+                                  setState(() {
+                                    getUsers();
+                                    follow[index]=true;
+                                  });
+                                },
+                              ),
                       ),
                     );
                   }),
