@@ -18,10 +18,10 @@ class _CommentScreenState extends State<CommentScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    _user = getUser();
+    _user = getComments();
     super.initState();
     _focus = FocusNode();
-    _userfuture = getComments();
+    // _userfuture = getComments();
   }
 
   Future<String> getUser() async {
@@ -68,7 +68,7 @@ class _CommentScreenState extends State<CommentScreen> {
     refresh();
   }
 
-  Future<List<DocumentSnapshot>> getComments() async {
+  Future<String> getComments() async {
     if (!isLoaded) {
       var fetch = await Firestore.instance
           .collection('articles')
@@ -82,14 +82,15 @@ class _CommentScreenState extends State<CommentScreen> {
         });
       comments = new List.from(comments.reversed);
     }
-    return comments;
+    var user = await getUser();
+    return user;
   }
 
-  Future<List<DocumentSnapshot>> refresh() {
+  Future<String> refresh() {
     setState(() {
-      _userfuture = getComments();
+      _user = getComments();
     });
-    return _userfuture;
+    return _user;
   }
 
   List<DocumentSnapshot> comments;
@@ -129,11 +130,11 @@ class _CommentScreenState extends State<CommentScreen> {
         child: RefreshIndicator(
           onRefresh: refresh,
           child: FutureBuilder(
-            future: _userfuture,
+            future: _user,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting)
                 return Center(child: CircularProgressIndicator());
-              if (comments == null)
+              if (comments.length == 0)
                 return Center(
                   child: Text("No comments yet..."),
                 );
@@ -146,7 +147,10 @@ class _CommentScreenState extends State<CommentScreen> {
                   itemBuilder: (context, index) {
                     print(comments[index]['uid']);
                     return CommentCard(
-                        comments[index], comments[index]['uid'] == _user);
+                        widget.article.documentID,
+                        comments[index],
+                        comments[index]['uid'] == snapshot.data,
+                        refresh);
                   },
                   itemCount: comments.length,
                 ),

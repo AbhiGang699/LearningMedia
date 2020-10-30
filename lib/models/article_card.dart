@@ -1,13 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:flutter_complete_guide/screens/profile.dart';
-import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
-=======
 import 'package:flutter_complete_guide/models/user.dart';
-import 'package:flutter_complete_guide/screens/profile.dart';
-import 'package:flutter_complete_guide/screens/searchUsers.dart';
->>>>>>> 5aff5ea494a407c9f9fa95542d1b9f811a29ed3c
+import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import '../screens/showArticle.dart';
 
 class ArticleCard extends StatefulWidget {
@@ -48,40 +42,12 @@ class _ArticleCardState extends State<ArticleCard> {
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                     ),
-<<<<<<< HEAD
-                  ),
-                ],
-              ),
-              trailing: this.widget.isAuthor
-                  ? IconButton(
-                      iconSize: 20,
-                      icon: Icon(Icons.edit),
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => EditorPage.edit(widget.doc),
-                      )),
-                      color: Colors.grey,
-                    )
-                  : IconButton(
-                      iconSize: 20,
-                      icon: _isPressed
-                          ? Icon(Icons.star)
-                          : Icon(Icons.star_border),
-                      onPressed: () {
-                        print("bookmarked");
-                        setState(() {
-                          _isPressed = !_isPressed;
-                        });
-                      },
-                      color: Colors.grey,
-=======
                     Text(
                       "${this.widget.doc.data["date"]}  ${this.widget.doc.data['tag']} ",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 10,
                       ),
->>>>>>> 5aff5ea494a407c9f9fa95542d1b9f811a29ed3c
                     ),
                   ],
                 ),
@@ -89,7 +55,15 @@ class _ArticleCardState extends State<ArticleCard> {
                     ? IconButton(
                         iconSize: 20,
                         icon: Icon(Icons.edit),
-                        onPressed: () => print("edit"),
+                        onPressed: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            appBar: AppBar(
+                              title: Text(widget.doc['username']),
+                            ),
+                            body: EditorPage.edit(widget.doc),
+                          ),
+                        )),
                         color: Colors.grey,
                       )
                     : IconButton(
@@ -106,18 +80,6 @@ class _ArticleCardState extends State<ArticleCard> {
                         color: Colors.grey,
                       ),
               ),
-<<<<<<< HEAD
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: Text(widget.doc.data['username']),
-                  ),
-                  body: Profile(
-                    widget.doc.data['user'],
-                  ),
-=======
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Text(
@@ -143,6 +105,7 @@ class _ArticleCardState extends State<ArticleCard> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CircleAvatar(
+                  radius: 10,
                   backgroundImage: NetworkImage(this.widget.url),
                 ),
                 SizedBox(
@@ -151,28 +114,11 @@ class _ArticleCardState extends State<ArticleCard> {
                 Text(
                   "${this.widget.doc.data["username"]}",
                   style: TextStyle(fontSize: 12),
->>>>>>> 5aff5ea494a407c9f9fa95542d1b9f811a29ed3c
                 ),
-              )),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CircleAvatar(
-                    radius: 10,
-                    backgroundImage: NetworkImage(this.widget.url),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "${this.widget.doc.data["username"]}",
-                    style: TextStyle(fontSize: 10),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  )
-                ],
-              ),
+                SizedBox(
+                  width: 5,
+                )
+              ],
             ),
           ),
           SizedBox(
