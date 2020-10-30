@@ -14,7 +14,6 @@ class _ProfileState extends State<Profile> {
   var _len = 0;
   List<DocumentSnapshot> _arti;
   bool isloading = true;
-  Future<List<DocumentSnapshot>> getArticles() async {
     try {
       final FirebaseUser _user = await FirebaseAuth.instance.currentUser();
 
