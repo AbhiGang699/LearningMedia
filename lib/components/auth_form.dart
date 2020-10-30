@@ -7,7 +7,7 @@ import 'package:flutter_complete_guide/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './image_input.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/authentication.dart';
+import '../helper/authentication.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthForm extends StatefulWidget {
@@ -96,17 +96,7 @@ class _AuthFormState extends State<AuthForm> {
 
   void login() async {
     try {
-      FirebaseUser user = await obj.signIn(_email, _password);
-      SharedPreferences s = await SharedPreferences.getInstance();
-      final QuerySnapshot result = await Firestore.instance
-          .collection('users')
-          .where('email', isEqualTo: _email)
-          .getDocuments();
-      final List<DocumentSnapshot> doc = result.documents;
-
-      s.setString('username', doc[0]['username']);
-      s.setString('fullname', doc[0]['fullname']);
-      s.setString('imageUrl', doc[0]['image_url']);
+      await obj.signIn(_email, _password);
     } catch (e) {
       Scaffold.of(context).showSnackBar(
         SnackBar(

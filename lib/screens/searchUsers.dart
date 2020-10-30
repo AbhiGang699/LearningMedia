@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/authentication.dart';
+import '../helper/authentication.dart';
 
 class ExploreUsers extends StatefulWidget{
   @override

@@ -6,7 +6,7 @@ class Authentication {
 
   Future<FirebaseUser> signIn(String mail, String pass) async {
     final AuthResult authResult =
-        await auth.signInWithEmailAndPassword(email: mail, password: pass);
+    await auth.signInWithEmailAndPassword(email: mail, password: pass);
     final FirebaseUser user = authResult.user;
 
     assert(user != null);
@@ -19,7 +19,7 @@ class Authentication {
 
   Future<FirebaseUser> registerUser(String mail, String pass) async {
     final AuthResult authResult =
-        await auth.createUserWithEmailAndPassword(email: mail, password: pass);
+    await auth.createUserWithEmailAndPassword(email: mail, password: pass);
     final FirebaseUser user = authResult.user;
 
     assert(user != null);
@@ -37,23 +37,5 @@ class Authentication {
     return true;
   }
 
-  Future<bool> doesFollow(String celeb,String fan) async{
-    final QuerySnapshot result=await Firestore.instance.collection("follow").where("celeb",isEqualTo: celeb).where("fan",isEqualTo: fan).getDocuments();
-    List<DocumentSnapshot> doc=result.documents;
-    bool ans;
-    if(doc.isEmpty) ans=false;
-    else ans=true;
-    print(ans);
-    return ans;
-  }
 
-  Future<List<DocumentSnapshot>> getUsers() async {
-    QuerySnapshot result = await Firestore.instance.collection("users").getDocuments();
-    List<DocumentSnapshot> _users=result.documents;
-    return _users;
-  }
-
-  Future<List<DoucmentSnapshot>> getOtherUsers async {
-
-}
 }
