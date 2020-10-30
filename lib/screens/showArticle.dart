@@ -21,7 +21,7 @@ class ViewNote extends State<ViewerPage> {
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             FlatButton.icon(
               label: Text('Upvote'),
