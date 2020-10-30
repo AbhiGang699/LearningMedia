@@ -6,7 +6,7 @@ class Authentication {
 
   Future<FirebaseUser> signIn(String mail, String pass) async {
     final AuthResult authResult =
-        await auth.signInWithEmailAndPassword(email: mail, password: pass);
+    await auth.signInWithEmailAndPassword(email: mail, password: pass);
     final FirebaseUser user = authResult.user;
 
     assert(user != null);
@@ -19,7 +19,7 @@ class Authentication {
 
   Future<FirebaseUser> registerUser(String mail, String pass) async {
     final AuthResult authResult =
-        await auth.createUserWithEmailAndPassword(email: mail, password: pass);
+    await auth.createUserWithEmailAndPassword(email: mail, password: pass);
     final FirebaseUser user = authResult.user;
 
     assert(user != null);
@@ -36,4 +36,6 @@ class Authentication {
     if (documents.length > 0) return false;
     return true;
   }
+
+
 }

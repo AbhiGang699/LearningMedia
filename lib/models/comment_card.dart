@@ -29,48 +29,50 @@ class _CommentCardState extends State<CommentCard> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _isAuthor,
-      builder: (context, snap) => Card(
-        elevation: 20,
-        margin: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              trailing: snap.data
-                  ? IconButton(icon: Icon(Icons.delete), onPressed: () {})
-                  : null,
-              title: Column(
+      future: getAuthor(),
+      builder: (context, snap) => snap.hasData
+          ? Card(
+              elevation: 20,
+              margin: EdgeInsets.all(10),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.comment['username'],
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ListTile(
+                    trailing: snap.data
+                        ? IconButton(icon: Icon(Icons.delete), onPressed: () {})
+                        : null,
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.comment['username'],
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          widget.comment['date'],
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    widget.comment['date'],
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10,
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      widget.comment["comment"],
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                widget.comment["comment"],
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
-          ],
-        ),
-      ),
+            )
+          : CircularProgressIndicator(),
     );
   }
 }

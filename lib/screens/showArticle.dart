@@ -21,15 +21,18 @@ class ViewNote extends State<ViewerPage> {
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            IconButton(
-              icon: Icon(Icons.thumb_up_alt_outlined),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.thumb_down_alt_outlined),
-              onPressed: () {},
-            ),
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              IconButton(
+                icon: Icon(Icons.thumb_up_alt_outlined),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(Icons.thumb_down_alt_outlined),
+                onPressed: () {},
+              ),
+            ]),
             IconButton(
               icon: Icon(Icons.message),
               onPressed: () {
