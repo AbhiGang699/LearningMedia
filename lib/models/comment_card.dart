@@ -44,13 +44,7 @@ class _CommentCardState extends State<CommentCard> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm??'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Are you sure you want to delete this comment?'),
-              ],
-            ),
-          ),
+          content: Text('Are you sure you want to delete this comment?'),
           actions: <Widget>[
             FlatButton.icon(
               icon: Icon(Icons.delete_forever),

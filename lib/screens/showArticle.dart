@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/components/image.dart';
 import 'package:flutter_complete_guide/screens/comment_screen.dart';
+import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import 'package:zefyr/zefyr.dart';
 
 class ViewerPage extends StatefulWidget {
   final DocumentSnapshot article;
-  ViewerPage(this.article);
+  final bool isAuthor;
+  ViewerPage(this.article, this.isAuthor);
   @override
   State<StatefulWidget> createState() => ViewNote();
 }
@@ -49,7 +51,21 @@ class ViewNote extends State<ViewerPage> {
         title: Text(widget.article['title'] == null
             ? "View Note"
             : widget.article['title']),
-        actions: [IconButton(icon: Icon(Icons.star), onPressed: () {})],
+        actions: [
+          widget.isAuthor
+              ? IconButton(
+                  iconSize: 20,
+                  icon: Icon(Icons.edit),
+                  onPressed: () =>
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      body: EditorPage.edit(widget.article),
+                    ),
+                  )),
+                  color: Colors.grey,
+                )
+              : IconButton(icon: Icon(Icons.star), onPressed: () {})
+        ],
       ),
       body: Container(
         padding: EdgeInsets.all(10.0),
