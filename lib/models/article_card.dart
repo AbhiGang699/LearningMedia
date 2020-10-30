@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/profile.dart';
+import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import '../screens/showArticle.dart';
 
 class ArticleCard extends StatefulWidget {
@@ -55,7 +57,10 @@ class _ArticleCardState extends State<ArticleCard> {
                   ? IconButton(
                       iconSize: 20,
                       icon: Icon(Icons.edit),
-                      onPressed: () => print("edit"),
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EditorPage.edit(widget.doc),
+                      )),
                       color: Colors.grey,
                     )
                   : IconButton(
@@ -80,23 +85,36 @@ class _ArticleCardState extends State<ArticleCard> {
                 textAlign: TextAlign.left,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(this.widget.url),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: Text(widget.doc.data['username']),
+                  ),
+                  body: Profile(
+                    widget.doc.data['user'],
+                  ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "${this.widget.doc.data["username"]}",
-                  style: TextStyle(fontSize: 10),
-                ),
-                SizedBox(
-                  width: 5,
-                )
-              ],
+              )),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundImage: NetworkImage(this.widget.url),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "${this.widget.doc.data["username"]}",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  )
+                ],
+              ),
             ),
             SizedBox(
               height: 5,

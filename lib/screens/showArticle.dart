@@ -21,16 +21,20 @@ class ViewNote extends State<ViewerPage> {
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
+            FlatButton.icon(
+              label: Text('Upvote'),
               icon: Icon(Icons.thumb_up_alt_outlined),
               onPressed: () {},
             ),
-            IconButton(
+            FlatButton.icon(
+              label: Text("Downvote"),
               icon: Icon(Icons.thumb_down_alt_outlined),
               onPressed: () {},
             ),
-            IconButton(
+            FlatButton.icon(
+              label: Text('Comments'),
               icon: Icon(Icons.message),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(

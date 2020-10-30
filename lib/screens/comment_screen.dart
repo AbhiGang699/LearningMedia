@@ -13,13 +13,21 @@ class CommentScreen extends StatefulWidget {
 
 class _CommentScreenState extends State<CommentScreen> {
   FocusNode _focus;
+  Future<String> _user;
   Future<List<DocumentSnapshot>> _userfuture;
   @override
   void initState() {
     // TODO: implement initState
+    _user = getUser();
     super.initState();
     _focus = FocusNode();
     _userfuture = getComments();
+  }
+
+  Future<String> getUser() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    print("uid:" + user.uid);
+    return user.uid;
   }
 
   @override
@@ -136,7 +144,9 @@ class _CommentScreenState extends State<CommentScreen> {
                     kToolbarHeight,
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return CommentCard(comments[index]);
+                    print(comments[index]['uid']);
+                    return CommentCard(
+                        comments[index], comments[index]['uid'] == _user);
                   },
                   itemCount: comments.length,
                 ),
