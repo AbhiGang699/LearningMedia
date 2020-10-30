@@ -127,6 +127,7 @@ class _ProfileState extends State<Profile> {
                             future: getFollowing(),
                             builder: (context, snap) {
                               if (snap.hasData) {
+                                if(following.data!=null)
                                 for (var i in following.data.keys) {
                                   if (i == _uid) doesFollow = true;
                                 }

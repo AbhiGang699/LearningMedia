@@ -27,6 +27,7 @@ dependencies:
   firebase_core: '^0.4.4'
   firebase_auth:
   firebase_storage: ^3.1.6
+  firebase_database:
   image_picker: ^0.6.5+3
   shared_preferences:
   zefyr:
