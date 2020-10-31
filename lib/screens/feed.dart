@@ -34,14 +34,16 @@ class _FeedState extends State<Feed> {
     }
     _arti.sort((a, b) => a['time'].compareTo(b['time']));
     _arti = new List.from(_arti.reversed);
+
     _urls.clear();
     for (int i = 0; i < _arti.length; i++) {
       String id = _arti[i].data["user"];
       DocumentSnapshot result =
-      await Firestore.instance.collection("users").document(id).get();
+          await Firestore.instance.collection("users").document(id).get();
       var temp = result.data["image_url"];
       _urls.add(temp.toString());
     }
+
     return _arti;
   }
 
@@ -77,7 +79,7 @@ class _FeedState extends State<Feed> {
                       itemBuilder: (context, index) {
                         bool isAuthor = (_uid == _arti[index]["user"]);
                         return ArticleCard(
-                            _arti[index], isAuthor, _urls[index],true);
+                            _arti[index], isAuthor, _urls[index], true);
                       },
                       itemCount: _arti.length,
                     ),

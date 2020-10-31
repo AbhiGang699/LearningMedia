@@ -58,6 +58,7 @@ class _ArticleCardState extends State<ArticleCard> {
                         icon: Icon(Icons.edit),
                         onPressed: () =>
                             Navigator.of(context).push(MaterialPageRoute(
+
                           builder: (context) => Scaffold(
                             body: EditorPage.edit(widget.doc),
                           ),

@@ -6,7 +6,7 @@ class Authentication {
 
   Future<FirebaseUser> signIn(String mail, String pass) async {
     final AuthResult authResult =
-    await auth.signInWithEmailAndPassword(email: mail, password: pass);
+        await auth.signInWithEmailAndPassword(email: mail, password: pass);
     final FirebaseUser user = authResult.user;
 
     assert(user != null);
@@ -19,7 +19,7 @@ class Authentication {
 
   Future<FirebaseUser> registerUser(String mail, String pass) async {
     final AuthResult authResult =
-    await auth.createUserWithEmailAndPassword(email: mail, password: pass);
+        await auth.createUserWithEmailAndPassword(email: mail, password: pass);
     final FirebaseUser user = authResult.user;
 
     assert(user != null);
@@ -37,5 +37,15 @@ class Authentication {
     return true;
   }
 
+  Future<List<String>> getFollowingUsers(String _uid) async {
+    DocumentSnapshot result =
+        await Firestore.instance.collection("follow").document(_uid).get();
+    List<String> ids = List<String>();
+    if (result == null) return ids;
 
+    for (var i in result.data.keys) {
+      ids.add(i);
+    }
+    return ids;
+  }
 }

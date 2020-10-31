@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_complete_guide/helper/authentication.dart';
 import 'package:flutter_complete_guide/models/article_card.dart';
+import 'package:flutter_complete_guide/models/showFollowers.dart';
+import 'package:flutter_complete_guide/models/showFollowing.dart';
 
 class Profile extends StatefulWidget {
   final String uid;
-  final obj = Authentication();
+
   Profile(this.uid);
   @override
   _ProfileState createState() => _ProfileState(uid);
@@ -16,17 +18,20 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final String _uid;
   _ProfileState(this._uid);
+  final obj = Authentication();
   String name = '';
   String url = '';
   bool _isCurrent = false;
   bool doesFollow = false;
+  var showFollowers, showFollowing;
 
   var _len = 0;
-  List<DocumentSnapshot> _arti, followers;
+  List<DocumentSnapshot> _arti;
   bool isloading = true;
 
   DocumentSnapshot following;
-  Future<DocumentSnapshot> getFollowing() async {
+
+  Future<DocumentSnapshot> getFollowingCurrent() async {
     FirebaseUser us = await FirebaseAuth.instance.currentUser();
     following =
         await Firestore.instance.collection("follow").document(us.uid).get();
@@ -39,7 +44,7 @@ class _ProfileState extends State<Profile> {
         .collection("follow")
         .document(_user.uid)
         .setData({_uid: _uid}, merge: true).whenComplete(() {
-      getFollowing().then((value) {
+      getFollowingCurrent().then((value) {
         setState(() {
           doesFollow = false;
         });
@@ -53,7 +58,7 @@ class _ProfileState extends State<Profile> {
         .collection("follow")
         .document(_user.uid)
         .updateData({_uid: FieldValue.delete()}).whenComplete(() {
-      getFollowing().then((value) {
+      getFollowingCurrent().then((value) {
         setState(() {
           doesFollow = false;
         });
@@ -105,72 +110,47 @@ class _ProfileState extends State<Profile> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage(url),
-                      backgroundColor: Colors.black,
-                    ),
-                    Text(
-                      name,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    if (_isCurrent == false)
-                      FutureBuilder(
-                          future: getFollowing(),
-                          builder: (context, snap) {
-                            if (snap.hasData) {
-                              if (following.data != null)
-                                for (var i in following.data.keys) {
-                                  if (i == _uid) doesFollow = true;
-                                }
-                            }
-                            return snap.hasData
-                                ? doesFollow
-                                    ? FlatButton(
-                                        onPressed: () {
-                                          return showDialog<void>(
-                                            context: context,
-                                            barrierDismissible:
-                                                false, // user must tap button!
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text('Confirm?'),
-                                                content: Text(
-                                                    'Are you sure to unfollow?'),
-                                                actions: <Widget>[
-                                                  FlatButton(
-                                                    child: Text('Unfollow'),
-                                                    onPressed: () {
-                                                      removeFollower();
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                  FlatButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: Text('Go back'),
-                                                  )
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Text("Unfollow"))
-                                    : FlatButton(
-                                        onPressed: () {
-                                          addFollower();
-                                        },
-                                        child: Text("Follow"))
-                                : CircularProgressIndicator();
-                          }),
-                  ],
+                FittedBox(
+                  //make this into a fitted box later
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(url),
+                        backgroundColor: Colors.black,
+                      ),
+                      Text(
+                        name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      if (_isCurrent == false)
+                        FutureBuilder(
+                            future: getFollowingCurrent(),
+                            builder: (context, snap) {
+                              if (snap.hasData) {
+                                if (following.data != null)
+                                  for (var i in following.data.keys) {
+                                    if (i == _uid) doesFollow = true;
+                                  }
+                              }
+                              return snap.hasData
+                                  ? doesFollow
+                                      ? FlatButton(
+                                          onPressed: () {
+                                            removeFollower();
+                                          },
+                                          child: Text("Unfollow"))
+                                      : FlatButton(
+                                          onPressed: () {
+                                            addFollower();
+                                          },
+                                          child: Text("Follow"))
+                                  : CircularProgressIndicator();
+                            }),
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -179,14 +159,16 @@ class _ProfileState extends State<Profile> {
                     children: [
                       RaisedButton(
                         onPressed: () {
-                          print("fol");
+                          showFollowers = new ShowFollowers(_uid);
+                          showFollowers.getFollowers(context);
                         },
                         child: Text("Followers"),
                       ),
                       RaisedButton(
                         child: Text("Following"),
                         onPressed: () {
-                          print("fol");
+                          showFollowing = new ShowFollowing(_uid);
+                          showFollowing.getFollowing(context);
                         },
                       )
                     ],
