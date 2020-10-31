@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import './zefyr_editor.dart';
-import 'searchUsers.dart';
 import 'feed.dart';
 import 'profile.dart';
 
@@ -25,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Feed(),
       ),
       Center(
-        child: ExploreUsers(),
+        child: Text("jj"),
       ),
       Center(
         child: Profile(_uid),

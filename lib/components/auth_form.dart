@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import './image_input.dart';
 import 'package:image_picker/image_picker.dart';
 import '../helper/authentication.dart';
