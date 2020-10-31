@@ -24,7 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Feed(),
       ),
       Center(
-        child: Text('jj'),
+
+        child: Text("jj"),
+
       ),
       Center(
         child: Profile(_uid),

@@ -28,8 +28,6 @@ class MyApp extends StatelessWidget {
           return AuthScreen();
         },
       ),
-      // routes: ,
     );
   }
 }
-// this is the comment added

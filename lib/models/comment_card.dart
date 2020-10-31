@@ -72,9 +72,11 @@ class _CommentCardState extends State<CommentCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
+
             trailing: widget.isAuthor
                 ? IconButton(icon: Icon(Icons.delete), onPressed: delete)
                 : null,
+
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
