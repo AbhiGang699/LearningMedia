@@ -32,6 +32,8 @@ dependencies:
   shared_preferences:
   zefyr:
   quill_delta:
+  sqflite:
+  path:
 
 dev_dependencies:
   flutter_test:
