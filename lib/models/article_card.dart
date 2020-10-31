@@ -30,7 +30,8 @@ class _ArticleCardState extends State<ArticleCard> {
         children: [
           GestureDetector(
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ViewerPage(this.widget.doc))),
+                builder: (context) =>
+                    ViewerPage(this.widget.doc, this.widget.isAuthor))),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ListTile(
@@ -57,7 +58,10 @@ class _ArticleCardState extends State<ArticleCard> {
                         icon: Icon(Icons.edit),
                         onPressed: () =>
                             Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EditorPage.edit(widget.doc),
+
+                          builder: (context) => Scaffold(
+                            body: EditorPage.edit(widget.doc),
+                          ),
                         )),
                         color: Colors.grey,
                       )

@@ -24,7 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Feed(),
       ),
       Center(
+
         child: Text("jj"),
+
       ),
       Center(
         child: Profile(_uid),
@@ -43,13 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text('Logging Out?'),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: <Widget>[
-                            Text('Are you sure to logout?'),
-                          ],
-                        ),
-                      ),
+                      content: Text('Are you sure to logout?'),
                       actions: <Widget>[
                         TextButton(
                           child: Text('Yes'),
