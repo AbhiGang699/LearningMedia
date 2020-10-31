@@ -13,21 +13,16 @@ class _FeedState extends State<Feed> {
   Future<List<DocumentSnapshot>> _userfuture;
   List<DocumentSnapshot> _arti;
   List<String> _urls = List<String>();
+  FirebaseUser _user;
   var _uid;
-  var _len = 0;
 
   Future<List<DocumentSnapshot>> getArticles() async {
     try {
-      final FirebaseUser _user = await FirebaseAuth.instance.currentUser();
+      _user = await FirebaseAuth.instance.currentUser();
       _uid = _user.uid;
       QuerySnapshot art =
           await Firestore.instance.collection("articles").getDocuments();
       _arti = art.documents;
-
-      if (_len != _arti.length) {
-        _len = _arti.length;
-        setState(() {});
-      }
     } catch (e) {
       print("sorry couldn't fetch data");
       print(e);
