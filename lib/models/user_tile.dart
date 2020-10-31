@@ -21,15 +21,22 @@ class UserTile extends StatelessWidget {
       child: FutureBuilder(
           future: getUser(),
           builder: (context, snap) {
-            return ListTile(
-              leading: snap.hasData
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(_user.data["image_url"]),
-                    )
-                  : CircularProgressIndicator(),
-              title: snap.hasData
-                  ? Text(_user.data["fullname"])
-                  : Text("Loading...."),
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                elevation: 5,
+                child: ListTile(
+                  leading: snap.hasData
+                      ? CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(_user.data["image_url"]),
+                        )
+                      : CircularProgressIndicator(),
+                  title: snap.hasData
+                      ? Text(_user.data["fullname"])
+                      : Text("Loading...."),
+                ),
+              ),
             );
           }),
     );

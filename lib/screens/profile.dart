@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_complete_guide/helper/authentication.dart';
 import 'package:flutter_complete_guide/models/article_card.dart';
-import 'package:flutter_complete_guide/models/user_tile.dart';
+import 'package:flutter_complete_guide/models/showFollowers.dart';
+import 'package:flutter_complete_guide/models/showFollowing.dart';
 
 class Profile extends StatefulWidget {
   final String uid;
@@ -22,12 +23,13 @@ class _ProfileState extends State<Profile> {
   String url = '';
   bool _isCurrent = false;
   bool doesFollow = false;
+  var showFollowers, showFollowing;
 
   var _len = 0;
-  List<DocumentSnapshot> _arti, _followers;
+  List<DocumentSnapshot> _arti;
   bool isloading = true;
 
-  DocumentSnapshot following, _doc, _followerDoc;
+  DocumentSnapshot following;
 
   Future<DocumentSnapshot> getFollowingCurrent() async {
     FirebaseUser us = await FirebaseAuth.instance.currentUser();
@@ -81,73 +83,6 @@ class _ProfileState extends State<Profile> {
       print(e);
     }
     return _arti;
-  }
-
-  Future<DocumentSnapshot> getFollowingHelper() async {
-    _doc = await Firestore.instance.collection("follow").document(_uid).get();
-    return _doc;
-  }
-
-  Future<List<DocumentSnapshot>> getFollowersHelper() async {
-    _followers = (await Firestore.instance.collection("follow").getDocuments())
-        .documents;
-    return _followers;
-  }
-
-  void getFollowing(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return FutureBuilder(
-              future: getFollowingHelper(),
-              builder: (context, snap) {
-                if (snap.hasData) print(_doc.data);
-                return snap.hasData
-                    ? (_doc.data == null || _doc.data.length == 0
-                        ? Center(
-                            child: Text("No users to show"),
-                          )
-                        : ListView.builder(
-                            itemCount: _doc.data.length,
-                            itemBuilder: (context, index) {
-                              List<String> followingList = List<String>();
-                              for (var i in _doc.data.keys)
-                                followingList.add(i);
-                              return UserTile(followingList[index]);
-                            }))
-                    : Center(child: CircularProgressIndicator());
-              });
-        });
-  }
-
-  void getFollowers(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return FutureBuilder(
-              future: getFollowersHelper(),
-              builder: (context, snap) {
-                List<String> followerList = List<String>();
-                if (snap.hasData) {
-                  for (var i in _followers) {
-                    for (var j in i.data.keys) {
-                      if (j == _uid) followerList.add(i.documentID);
-                    }
-                  }
-                }
-                return snap.hasData
-                    ? (followerList.length == 0 || _followers == null)
-                        ? Center(
-                            child: Text("No users to Show"),
-                          )
-                        : ListView.builder(
-                            itemCount: followerList.length,
-                            itemBuilder: (context, index) {
-                              return UserTile(followerList[index]);
-                            })
-                    : Center(child: CircularProgressIndicator());
-              });
-        });
   }
 
   @override
@@ -224,14 +159,16 @@ class _ProfileState extends State<Profile> {
                     children: [
                       RaisedButton(
                         onPressed: () {
-                          getFollowers(context);
+                          showFollowers = new ShowFollowers(_uid);
+                          showFollowers.getFollowers(context);
                         },
                         child: Text("Followers"),
                       ),
                       RaisedButton(
                         child: Text("Following"),
                         onPressed: () {
-                          getFollowing(context);
+                          showFollowing = new ShowFollowing(_uid);
+                          showFollowing.getFollowing(context);
                         },
                       )
                     ],
