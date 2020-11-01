@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/redirect_screen.dart';
 import './screens/home_screen.dart';
 import './screens/auth_screen.dart';
 import 'screens/auth_screen.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (ctx, snap) {
-          if (snap.hasData) return HomeScreen();
+          if (snap.hasData) return RedirectScreen();
           return AuthScreen();
         },
       ),

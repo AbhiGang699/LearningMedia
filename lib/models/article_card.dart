@@ -9,9 +9,11 @@ class ArticleCard extends StatefulWidget {
   final DocumentSnapshot doc;
   final bool isAuthor;
   final url;
-  final bool canTap; //true if the user profile should show on tap else false
-
-  ArticleCard(this.doc, this.isAuthor, this.url, this.canTap);
+  final bool canTap;
+  final bool isAdmin; //true if the user profile should show on tap else false
+  final Function refresh;
+  ArticleCard(this.doc, this.isAuthor, this.url, this.canTap, this.isAdmin,
+      {this.refresh});
 
   @override
   _ArticleCardState createState() => _ArticleCardState();
@@ -41,7 +43,7 @@ class _ArticleCardState extends State<ArticleCard> {
     return true;
   }
 
-  Future<void> refresh() async {
+  Future<void> refreshcard() async {
     setState(() {
       _isPressed = check(widget.doc.documentID);
     });
@@ -62,7 +64,71 @@ class _ArticleCardState extends State<ArticleCard> {
             .collection('bookmark')
             .document(id)
             .delete();
-    refresh();
+    refreshcard();
+  }
+
+  Future<void> approve() async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm?'),
+            content: Text('Are you sure to approve this article?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Approve'),
+                onPressed: () async {
+                  await Firestore.instance
+                      .collection('articles')
+                      .document(widget.doc.documentID)
+                      .updateData({'isApproved': true});
+
+                  Navigator.of(context).pop();
+                  widget.refresh();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> deletePost() async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm?'),
+            content: Text('Are you sure to delete this article?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Delete'),
+                onPressed: () async {
+                  await Firestore.instance
+                      .collection('articles')
+                      .document(widget.doc.documentID)
+                      .delete();
+
+                  Navigator.of(context).pop();
+                  widget.refresh();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -82,24 +148,43 @@ class _ArticleCardState extends State<ArticleCard> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ListTile(
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                title: Row(
                   children: [
-                    Text(
-                      this.widget.doc.data["title"],
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "${this.widget.doc.data["date"]}  ${this.widget.doc.data['tag']} ",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            this.widget.doc.data["title"],
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "${this.widget.doc.data["date"]}  ${this.widget.doc.data['tag']} ",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    if (this.widget.isAdmin || this.widget.isAuthor)
+                      IconButton(
+                        icon: Icon(Icons.delete_forever),
+                        onPressed: deletePost,
+                      ),
+                    if (this.widget.isAdmin &&
+                        (this.widget.doc['isApproved'] == false ||
+                            this.widget.doc['isApproved'] == null))
+                      IconButton(
+                        icon: Icon(Icons.check_circle_outline),
+                        onPressed: approve,
+                      ),
                   ],
                 ),
-                trailing: this.widget.isAuthor
+                trailing: this.widget.isAuthor || this.widget.isAdmin
                     ? IconButton(
                         iconSize: 20,
                         icon: Icon(Icons.edit),
@@ -150,24 +235,33 @@ class _ArticleCardState extends State<ArticleCard> {
                     builder: (context) =>
                         UserCard(this.widget.doc.data["user"])))
                 : null,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CircleAvatar(
-                  radius: 10,
-                  backgroundImage: NetworkImage(this.widget.url),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "${this.widget.doc.data["username"]}",
-                  style: TextStyle(fontSize: 12),
-                ),
-                SizedBox(
-                  width: 5,
-                )
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: widget.doc.data['isApproved']
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.spaceBetween,
+                children: [
+                  if (!widget.doc.data['isApproved']) Text('Pending'),
+                  SizedBox(
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    CircleAvatar(
+                      radius: 10,
+                      backgroundImage: NetworkImage(this.widget.url),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "${this.widget.doc.data["username"]}",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    )
+                  ]))
+                ],
+              ),
             ),
           ),
           SizedBox(

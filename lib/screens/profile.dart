@@ -220,7 +220,7 @@ class _ProfileState extends State<Profile> {
                                   : ListView.builder(
                                       itemBuilder: (context, index) {
                                         return ArticleCard(_arti[index],
-                                            _isCurrent, url, false);
+                                            _isCurrent, url, false, false);
                                       },
                                       itemCount: _arti.length,
                                     ),

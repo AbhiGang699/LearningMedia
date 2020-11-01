@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/article_card.dart';
 
-class Feed extends StatefulWidget {
+class ApprovedArticlesScreen extends StatefulWidget {
   @override
-  _FeedState createState() => _FeedState();
+  _ApprovedArticlesScreenState createState() => _ApprovedArticlesScreenState();
 }
 
-class _FeedState extends State<Feed> {
+class _ApprovedArticlesScreenState extends State<ApprovedArticlesScreen> {
   Future<List<DocumentSnapshot>> _userfuture;
   List<DocumentSnapshot> _arti;
   List<String> _urls = List<String>();
@@ -66,7 +66,7 @@ class _FeedState extends State<Feed> {
           if (snapshot.hasData && _urls.length > 0) {
             return RefreshIndicator(
               onRefresh: refreshArticles,
-              child: snapshot.data.length == 0
+              child: snapshot.data == null
                   ? Center(
                       child: GestureDetector(
                           onTap: refreshArticles,
@@ -76,14 +76,19 @@ class _FeedState extends State<Feed> {
                       itemBuilder: (context, index) {
                         bool isAuthor = (_uid == _arti[index]["user"]);
                         return ArticleCard(
-                            _arti[index], isAuthor, _urls[index], true, false,
-                            refresh: refreshArticles);
+                          _arti[index],
+                          isAuthor,
+                          _urls[index],
+                          true,
+                          true,
+                          refresh: refreshArticles,
+                        );
                       },
                       itemCount: _arti.length,
                     ),
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Text('No approved articles'));
           }
         });
   }

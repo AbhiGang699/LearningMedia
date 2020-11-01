@@ -48,7 +48,8 @@ class CreateNote extends State<EditorPage> {
       'username': result.data['username'],
       'date': DateFormat.yMMMMd('en_US').format(DateTime.now()).toString(),
       'time': _time,
-      'caption': _controller.document.toPlainText().substring(0, 20) + '...'
+      'caption': _controller.document.toPlainText().substring(0, 20) + '...',
+      'isApproved': false,
     });
     // print(jsonEncode(_controller.document.toPlainText()));
     Navigator.of(context).pop();
@@ -69,7 +70,8 @@ class CreateNote extends State<EditorPage> {
       'time': widget._article['time'],
       'caption': _controller.document.toPlainText().substring(
               0, max(20, _controller.document.toPlainText().length)) +
-          '...'
+          '...',
+      'isApproved': false,
     });
     Navigator.of(context).pop();
     Navigator.of(context).pop();

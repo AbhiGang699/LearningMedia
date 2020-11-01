@@ -62,7 +62,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
               : ListView.builder(
                   itemBuilder: (context, index) {
                     return ArticleCard(
-                        snapshot.data[index], false, _urls[index], true);
+                        snapshot.data[index], false, _urls[index], true, false);
                   },
                   itemCount: snapshot.data.length,
                 );
