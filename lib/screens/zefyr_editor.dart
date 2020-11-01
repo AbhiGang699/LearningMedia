@@ -94,7 +94,7 @@ class CreateNote extends State<EditorPage> {
             padding: EdgeInsets.all(5.0),
             controller: _controller,
             focusNode: _focusNode,
-            imageDelegate: CustomImageDelegate(),
+            // imageDelegate: CustomImageDelegate(),
           ),
         ),
       ),
