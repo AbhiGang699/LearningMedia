@@ -16,8 +16,8 @@ class UserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => UserCard(_uid))),
+      onTap: () => Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => UserCard(_uid))),
       child: FutureBuilder(
           future: getUser(),
           builder: (context, snap) {

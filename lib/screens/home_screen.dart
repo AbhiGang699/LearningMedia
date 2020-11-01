@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       Center(
         child: BookmarkScreen(),
+
       ),
       Center(
         child: Profile(_uid),
