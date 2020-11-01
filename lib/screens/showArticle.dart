@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/components/image.dart';
 import 'package:flutter_complete_guide/helper/authentication.dart';
+import 'package:flutter_complete_guide/models/user_list.dart';
 import 'package:flutter_complete_guide/screens/comment_screen.dart';
 import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import 'package:zefyr/zefyr.dart';
@@ -19,8 +20,6 @@ class ViewerPage extends StatefulWidget {
 }
 
 class ViewNote extends State<ViewerPage> {
-  Future<bool> _isPressed;
-  FirebaseUser _user;
   ZefyrController _controller;
   FocusNode _focusNode;
   FirebaseUser _currentUser;
@@ -29,6 +28,8 @@ class ViewNote extends State<ViewerPage> {
   bool upStatus = false;
   bool downStatus = false;
   int numberOfUpvotes = -1, numberOfDownvotes = -1;
+  List<String> _userUpvoteList, _userDownvoteList;
+  final _obj = UserList();
 
   Future<void> countVotes() async {
     numberOfUpvotes = -1;
@@ -44,9 +45,18 @@ class ViewNote extends State<ViewerPage> {
       return value;
     });
 
+    _userUpvoteList = List<String>();
+    _userDownvoteList = List<String>();
+
     for (var i in _result.documents) {
-      if (i.data["isUp"] == 1) numberOfUpvotes++;
-      if (i.data["isDown"] == 1) numberOfDownvotes++;
+      if (i.data["isUp"] == 1) {
+        numberOfUpvotes++;
+        _userUpvoteList.add(i.documentID);
+      }
+      if (i.data["isDown"] == 1) {
+        numberOfDownvotes++;
+        _userDownvoteList.add((i.documentID));
+      }
     }
   }
 
@@ -133,157 +143,111 @@ class ViewNote extends State<ViewerPage> {
     setVote(value);
   }
 
-  Future<bool> check(String id) async {
-    _user = await FirebaseAuth.instance.currentUser();
-    var res = await Firestore.instance
-        .collection('users')
-        .document(_user.uid)
-        .collection('bookmark')
-        .document(id)
-        .get();
-    // print(res.data);
-    if (res.data == null) return false;
-
-    return true;
-  }
-
-  Future<void> refresh() async {
-    setState(() {
-      _isPressed = check(widget.article.documentID);
-    });
-  }
-
-  Future<void> action(String id, bool marked) async {
-    print(marked ? 'unmark' : 'mark');
-    !marked
-        ? await Firestore.instance
-            .collection('users')
-            .document(_user.uid)
-            .collection('bookmark')
-            .document(id)
-            .setData({'bookmark': id})
-        : await Firestore.instance
-            .collection('users')
-            .document(_user.uid)
-            .collection('bookmark')
-            .document(id)
-            .delete();
-    refresh();
+  void showVotes(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return TabBarView(children: null);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     print(upStatus);
-    return FutureBuilder(
-        future: _isPressed,
-        builder: (context, snap) {
-          if (snap.connectionState == ConnectionState.waiting)
-            return FittedBox(child: CircularProgressIndicator());
-          return Scaffold(
-            bottomNavigationBar: BottomAppBar(
-              child: FittedBox(
-                child: Column(
-                  children: [
-                    Card(
-                      child: Text("See Votes"),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        FlatButton.icon(
-                          label: Text(
-                            numberOfUpvotes == -1
-                                ? 'fetching..'
-                                : (numberOfUpvotes.toString() +
-                                    ' Upvote' +
-                                    (numberOfUpvotes != 1 ? 's' : '')),
-                            style: TextStyle(
-                              color: numberOfUpvotes == -1
-                                  ? Colors.grey
-                                  : (upStatus ? Colors.blue : Colors.black),
-                            ),
-                          ),
-                          icon: Icon(
-                            Icons.thumb_up_alt_outlined,
-                            color: (upStatus ? Colors.blue : Colors.black),
-                          ),
-                          onPressed: upVotePressed,
-                        ),
-                        FlatButton.icon(
-                          label: Text(
-                            numberOfDownvotes == -1
-                                ? 'fetching..'
-                                : (numberOfDownvotes.toString() +
-                                    " Downvote" +
-                                    (numberOfDownvotes != 1 ? 's' : '')),
-                            style: TextStyle(
-                              color: numberOfDownvotes == -1
-                                  ? Colors.grey
-                                  : (downStatus ? Colors.red : Colors.black),
-                            ),
-                          ),
-                          icon: Icon(Icons.thumb_down_alt_outlined,
-                              color: (downStatus ? Colors.red : Colors.black)),
-                          onPressed: downVotePressed,
-                        ),
-                        FlatButton.icon(
-                          label: Text('Comments'),
-                          icon: Icon(Icons.message),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  CommentScreen(widget.article),
-                            ));
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+    return Scaffold(
+      bottomNavigationBar: BottomAppBar(
+        child: FittedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FlatButton.icon(
+                label: Text(
+                  numberOfUpvotes == -1
+                      ? 'fetching..'
+                      : (numberOfUpvotes.toString() +
+                          ' Upvote' +
+                          (numberOfUpvotes != 1 ? 's' : '')),
+                  style: TextStyle(
+                    color: numberOfUpvotes == -1
+                        ? Colors.grey
+                        : (upStatus ? Colors.blue : Colors.black),
+                  ),
                 ),
-              ),
-            ),
-            appBar: AppBar(
-              title: Text(widget.article['title'] == null
-                  ? "View Note"
-                  : widget.article['title']),
-              actions: [
-                widget.isAuthor
-                    ? IconButton(
-                        iconSize: 20,
-                        icon: Icon(Icons.edit),
-                        onPressed: () => Navigator.of(context)
-                            .pushReplacement(MaterialPageRoute(
-                          builder: (context) => Scaffold(
-                            body: EditorPage.edit(widget.article),
-                          ),
-                        )),
-                        color: Colors.grey,
-                      )
-                    : IconButton(
-                        iconSize: 20,
-                        icon: snap.data
-                            ? Icon(Icons.star)
-                            : Icon(Icons.star_border),
-                        onPressed: () =>
-                            action(widget.article.documentID, snap.data),
-                        color: Colors.black,
-                      ),
-              ],
-            ),
-            body: Container(
-              padding: EdgeInsets.all(10.0),
-              child: ZefyrScaffold(
-                child: ZefyrEditor(
-                  padding: EdgeInsets.all(5.0),
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  imageDelegate: CustomImageDelegate(),
-                  mode: ZefyrMode.view,
+                icon: Icon(
+                  Icons.thumb_up_alt_outlined,
+                  color: (upStatus ? Colors.blue : Colors.black),
                 ),
+                onPressed: upVotePressed,
+                onLongPress: () {
+                  _obj.showList(context, _userUpvoteList);
+                },
               ),
-            ),
-          );
-        });
+              FlatButton.icon(
+                label: Text(
+                  numberOfDownvotes == -1
+                      ? 'fetching..'
+                      : (numberOfDownvotes.toString() +
+                          " Downvote" +
+                          (numberOfDownvotes != 1 ? 's' : '')),
+                  style: TextStyle(
+                    color: numberOfDownvotes == -1
+                        ? Colors.grey
+                        : (downStatus ? Colors.red : Colors.black),
+                  ),
+                ),
+                icon: Icon(Icons.thumb_down_alt_outlined,
+                    color: (downStatus ? Colors.red : Colors.black)),
+                onPressed: downVotePressed,
+                onLongPress: () {
+                  _obj.showList(context, _userDownvoteList);
+                },
+              ),
+              FlatButton.icon(
+                label: Text('Comments'),
+                icon: Icon(Icons.message),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => CommentScreen(widget.article),
+                  ));
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        title: Text(widget.article['title'] == null
+            ? "View Note"
+            : widget.article['title']),
+        actions: [
+          widget.isAuthor
+              ? IconButton(
+                  iconSize: 20,
+                  icon: Icon(Icons.edit),
+                  onPressed: () =>
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      body: EditorPage.edit(widget.article),
+                    ),
+                  )),
+                  color: Colors.grey,
+                )
+              : IconButton(icon: Icon(Icons.star), onPressed: () {})
+        ],
+      ),
+      body: Container(
+        padding: EdgeInsets.all(10.0),
+        child: ZefyrScaffold(
+          child: ZefyrEditor(
+            padding: EdgeInsets.all(5.0),
+            controller: _controller,
+            focusNode: _focusNode,
+            imageDelegate: CustomImageDelegate(),
+            mode: ZefyrMode.view,
+          ),
+        ),
+      ),
+    );
     // );
   }
 

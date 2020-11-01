@@ -7,8 +7,6 @@ import 'feed.dart';
 import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
-  // final FirebaseUser user;
-  // HomeScreen(this.user);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -65,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-          // Text('Dubious'),
           if (_index == 0)
             IconButton(
               icon: Icon(Icons.search),

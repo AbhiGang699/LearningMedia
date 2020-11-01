@@ -14,7 +14,6 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
-  List<String> _interests = List<String>();
   FirebaseAuth auth = FirebaseAuth.instance;
   final Authentication obj = new Authentication();
   FirebaseUser user;
@@ -108,6 +107,7 @@ class _AuthFormState extends State<AuthForm> {
         _isloading = false;
       });
     }
+    // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(user)));
   }
 
   void _trySave(BuildContext context) async {
