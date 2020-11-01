@@ -79,7 +79,7 @@ class _ApprovedArticlesScreenState extends State<ApprovedArticlesScreen> {
                           _arti[index],
                           isAuthor,
                           _urls[index],
-                          true,
+                          false,
                           true,
                           refresh: refreshArticles,
                         );
