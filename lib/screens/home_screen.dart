@@ -65,11 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           if (_index == 0)
             IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            ),
-          if (_index == 0)
-            IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(
