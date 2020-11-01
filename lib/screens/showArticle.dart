@@ -58,6 +58,7 @@ class ViewNote extends State<ViewerPage> {
         _userDownvoteList.add((i.documentID));
       }
     }
+    setState(() {});
   }
 
   Future<void> setCurrentUser() async {
