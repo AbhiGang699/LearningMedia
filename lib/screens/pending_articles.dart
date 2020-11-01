@@ -80,7 +80,7 @@ class _PendingArticlesScreenState extends State<PendingArticlesScreen> {
                           _arti[index],
                           isAuthor,
                           _urls[index],
-                          true,
+                          false,
                           true,
                           refresh: refreshArticles,
                         );
