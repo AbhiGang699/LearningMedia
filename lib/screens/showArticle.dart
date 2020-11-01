@@ -220,19 +220,20 @@ class ViewNote extends State<ViewerPage> {
             ? "View Note"
             : widget.article['title']),
         actions: [
-          widget.isAuthor
-              ? IconButton(
-                  iconSize: 20,
-                  icon: Icon(Icons.edit),
-                  onPressed: () =>
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      body: EditorPage.edit(widget.article),
-                    ),
-                  )),
-                  color: Colors.grey,
-                )
-              : IconButton(icon: Icon(Icons.star), onPressed: () {})
+          if (widget.isAuthor)
+            IconButton(
+              iconSize: 20,
+              icon: Icon(Icons.edit),
+              onPressed: () =>
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  body: EditorPage.edit(widget.article),
+                ),
+              )),
+              color: Colors.grey,
+            )
+          // : IconButton(icon: Icon(Icons.star), onPressed: () {})
+          // : null
         ],
       ),
       body: Container(

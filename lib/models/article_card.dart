@@ -115,9 +115,7 @@ class _ArticleCardState extends State<ArticleCard> {
                         future: _isPressed,
                         builder: (context, snap) {
                           if (snap.connectionState == ConnectionState.waiting)
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
+                            return SizedBox(child: CircularProgressIndicator());
 
                           return IconButton(
                             iconSize: 20,

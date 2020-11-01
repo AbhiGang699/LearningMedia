@@ -58,7 +58,7 @@ class _ProfileState extends State<Profile> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Select Tag for the article'),
+            title: Text('Confirm?'),
             content: Text('Are you sure to unfollow?'),
             actions: <Widget>[
               TextButton(
