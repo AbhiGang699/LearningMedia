@@ -48,8 +48,4 @@ class Authentication {
     }
     return ids;
   }
-
-  Future<FirebaseUser> getCurrentUser() async {
-    return await FirebaseAuth.instance.currentUser();
-  }
 }
