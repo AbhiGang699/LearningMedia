@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       Center(
         child: BookmarkScreen(),
-
       ),
       Center(
         child: Profile(_uid),
@@ -51,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text('Yes'),
                           onPressed: () {
                             FirebaseAuth.instance.signOut();
+                            Navigator.of(context).pop();
                           },
                         ),
                         TextButton(

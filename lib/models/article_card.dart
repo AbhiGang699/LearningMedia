@@ -65,124 +65,118 @@ class _ArticleCardState extends State<ArticleCard> {
     refresh();
   }
 
-  Future<void> unmark(id) async {
-    refresh();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _isPressed,
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.waiting)
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-
-        return Card(
-          elevation: 10,
-          shadowColor: Colors.grey,
-          color: Colors.white,
-          margin: EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        ViewerPage(this.widget.doc, this.widget.isAuthor))),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              this.widget.doc.data["title"],
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              "${this.widget.doc.data["date"]}  ${this.widget.doc.data['tag']} ",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: this.widget.isAuthor
-                            ? IconButton(
-                                iconSize: 20,
-                                icon: Icon(Icons.edit),
-                                onPressed: () => Navigator.of(context)
-                                    .push(MaterialPageRoute(
-                                  builder: (context) => Scaffold(
-                                    body: EditorPage.edit(widget.doc),
-                                  ),
-                                )),
-                                color: Colors.black,
-                              )
-                            : IconButton(
-                                iconSize: 20,
-                                icon: snap.data
-                                    ? Icon(Icons.star)
-                                    : Icon(Icons.star_border),
-                                onPressed: () =>
-                                    action(widget.doc.documentID, snap.data),
-                                color: Colors.black,
-                              ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          this.widget.doc.data["caption"],
-                          style: TextStyle(color: Colors.black),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ]),
-              ),
-              Divider(
-                thickness: 2,
-                indent: 15,
-                endIndent: 15,
-              ),
-              GestureDetector(
-                onTap: this.widget.canTap
-                    ? () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            UserCard(this.widget.doc.data["user"])))
-                    : null,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+    return Card(
+      elevation: 10,
+      shadowColor: Colors.grey,
+      color: Colors.white,
+      margin: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) =>
+                    ViewerPage(this.widget.doc, this.widget.isAuthor))),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListTile(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 10,
-                      backgroundImage: NetworkImage(this.widget.url),
-                    ),
-                    SizedBox(
-                      width: 10,
+                    Text(
+                      this.widget.doc.data["title"],
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "${this.widget.doc.data["username"]}",
-                      style: TextStyle(fontSize: 12),
+                      "${this.widget.doc.data["date"]}  ${this.widget.doc.data['tag']} ",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10,
+                      ),
                     ),
-                    SizedBox(
-                      width: 5,
-                    )
                   ],
                 ),
+                trailing: this.widget.isAuthor
+                    ? IconButton(
+                        iconSize: 20,
+                        icon: Icon(Icons.edit),
+                        onPressed: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            body: EditorPage.edit(widget.doc),
+                          ),
+                        )),
+                        color: Colors.black,
+                      )
+                    : FutureBuilder(
+                        future: _isPressed,
+                        builder: (context, snap) {
+                          if (snap.connectionState == ConnectionState.waiting)
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+
+                          return IconButton(
+                            iconSize: 20,
+                            icon: snap.data
+                                ? Icon(Icons.star)
+                                : Icon(Icons.star_border),
+                            onPressed: () =>
+                                action(widget.doc.documentID, snap.data),
+                            color: Colors.black,
+                          );
+                        },
+                      ),
               ),
-              SizedBox(
-                height: 5,
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  this.widget.doc.data["caption"],
+                  style: TextStyle(color: Colors.black),
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ],
+            ]),
           ),
-        );
-      },
+          Divider(
+            thickness: 2,
+            indent: 15,
+            endIndent: 15,
+          ),
+          GestureDetector(
+            onTap: this.widget.canTap
+                ? () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        UserCard(this.widget.doc.data["user"])))
+                : null,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CircleAvatar(
+                  radius: 10,
+                  backgroundImage: NetworkImage(this.widget.url),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "${this.widget.doc.data["username"]}",
+                  style: TextStyle(fontSize: 12),
+                ),
+                SizedBox(
+                  width: 5,
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+        ],
+      ),
     );
   }
 }

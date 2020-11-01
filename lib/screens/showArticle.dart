@@ -19,6 +19,8 @@ class ViewerPage extends StatefulWidget {
 }
 
 class ViewNote extends State<ViewerPage> {
+  Future<bool> _isPressed;
+  FirebaseUser _user;
   ZefyrController _controller;
   FocusNode _focusNode;
   FirebaseUser _currentUser;
@@ -131,6 +133,44 @@ class ViewNote extends State<ViewerPage> {
     setVote(value);
   }
 
+  Future<bool> check(String id) async {
+    _user = await FirebaseAuth.instance.currentUser();
+    var res = await Firestore.instance
+        .collection('users')
+        .document(_user.uid)
+        .collection('bookmark')
+        .document(id)
+        .get();
+    // print(res.data);
+    if (res.data == null) return false;
+
+    return true;
+  }
+
+  Future<void> refresh() async {
+    setState(() {
+      _isPressed = check(widget.article.documentID);
+    });
+  }
+
+  Future<void> action(String id, bool marked) async {
+    print(marked ? 'unmark' : 'mark');
+    !marked
+        ? await Firestore.instance
+            .collection('users')
+            .document(_user.uid)
+            .collection('bookmark')
+            .document(id)
+            .setData({'bookmark': id})
+        : await Firestore.instance
+            .collection('users')
+            .document(_user.uid)
+            .collection('bookmark')
+            .document(id)
+            .delete();
+    refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     print(upStatus);
@@ -213,7 +253,21 @@ class ViewNote extends State<ViewerPage> {
                   )),
                   color: Colors.grey,
                 )
-              : IconButton(icon: Icon(Icons.star), onPressed: () {})
+              : FutureBuilder(
+                  future: _isPressed,
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.waiting)
+                      return FittedBox(child: CircularProgressIndicator());
+                    return IconButton(
+                      iconSize: 20,
+                      icon: snap.data
+                          ? Icon(Icons.star)
+                          : Icon(Icons.star_border),
+                      onPressed: () =>
+                          action(widget.article.documentID, snap.data),
+                      color: Colors.black,
+                    );
+                  })
         ],
       ),
       body: Container(
