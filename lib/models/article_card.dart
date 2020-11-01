@@ -76,7 +76,7 @@ class _ArticleCardState extends State<ArticleCard> {
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.waiting)
           return Center(
-            child: CircularProgressIndicator(),
+            child: Text(""),
           );
 
         return Card(

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/components/image.dart';
 import 'package:flutter_complete_guide/helper/authentication.dart';
+import 'package:flutter_complete_guide/models/user_list.dart';
 import 'package:flutter_complete_guide/screens/comment_screen.dart';
 import 'package:flutter_complete_guide/screens/zefyr_editor.dart';
 import 'package:zefyr/zefyr.dart';
@@ -27,6 +28,8 @@ class ViewNote extends State<ViewerPage> {
   bool upStatus = false;
   bool downStatus = false;
   int numberOfUpvotes = -1, numberOfDownvotes = -1;
+  List<String> _userUpvoteList, _userDownvoteList;
+  final _obj = UserList();
 
   Future<void> countVotes() async {
     numberOfUpvotes = -1;
@@ -42,9 +45,18 @@ class ViewNote extends State<ViewerPage> {
       return value;
     });
 
+    _userUpvoteList = List<String>();
+    _userDownvoteList = List<String>();
+
     for (var i in _result.documents) {
-      if (i.data["isUp"] == 1) numberOfUpvotes++;
-      if (i.data["isDown"] == 1) numberOfDownvotes++;
+      if (i.data["isUp"] == 1) {
+        numberOfUpvotes++;
+        _userUpvoteList.add(i.documentID);
+      }
+      if (i.data["isDown"] == 1) {
+        numberOfDownvotes++;
+        _userDownvoteList.add((i.documentID));
+      }
     }
   }
 
@@ -131,6 +143,14 @@ class ViewNote extends State<ViewerPage> {
     setVote(value);
   }
 
+  void showVotes(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return TabBarView(children: null);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     print(upStatus);
@@ -139,8 +159,11 @@ class ViewNote extends State<ViewerPage> {
         child: FittedBox(
           child: Column(
             children: [
-              Card(
-                child: Text("See Votes"),
+              GestureDetector(
+                onTap: () => showVotes(context),
+                child: Card(
+                  child: Text("See Votes"),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -163,6 +186,9 @@ class ViewNote extends State<ViewerPage> {
                       color: (upStatus ? Colors.blue : Colors.black),
                     ),
                     onPressed: upVotePressed,
+                    onLongPress: () {
+                      _obj.showList(context, _userUpvoteList);
+                    },
                   ),
                   FlatButton.icon(
                     label: Text(
@@ -180,6 +206,9 @@ class ViewNote extends State<ViewerPage> {
                     icon: Icon(Icons.thumb_down_alt_outlined,
                         color: (downStatus ? Colors.red : Colors.black)),
                     onPressed: downVotePressed,
+                    onLongPress: () {
+                      _obj.showList(context, _userDownvoteList);
+                    },
                   ),
                   FlatButton.icon(
                     label: Text('Comments'),

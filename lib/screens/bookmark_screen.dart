@@ -13,7 +13,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   List<String> _urls = List<String>();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _bookmark = getBookmark();
   }
