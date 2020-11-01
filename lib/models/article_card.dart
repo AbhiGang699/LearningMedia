@@ -123,7 +123,7 @@ class _ArticleCardState extends State<ArticleCard> {
                                     body: EditorPage.edit(widget.doc),
                                   ),
                                 )),
-                                color: Colors.grey,
+                                color: Colors.black,
                               )
                             : IconButton(
                                 iconSize: 20,

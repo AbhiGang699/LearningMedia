@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/helper/tag_helper.dart';
 
 class TagDropDownMenu extends StatefulWidget {
   final void Function(String value) setTag;
@@ -9,7 +10,7 @@ class TagDropDownMenu extends StatefulWidget {
 }
 
 class _TagDropDownMenuState extends State<TagDropDownMenu> {
-  List<String> _tag = ['Technology', 'Fashion', 'DIY', 'Science'];
+  List<String> _tag = TagHelper.tags;
   String dropdownValue = 'Technology';
   @override
   Widget build(BuildContext context) {

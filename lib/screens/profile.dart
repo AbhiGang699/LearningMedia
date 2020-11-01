@@ -52,6 +52,33 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  Future<void> unfollowdialog() async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Select Tag for the article'),
+            content: Text('Are you sure to unfollow?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Unfollow'),
+                onPressed: () {
+                  removeFollower();
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   Future<void> removeFollower() async {
     FirebaseUser _user = await FirebaseAuth.instance.currentUser();
     Firestore.instance
@@ -139,7 +166,7 @@ class _ProfileState extends State<Profile> {
                                   ? doesFollow
                                       ? FlatButton(
                                           onPressed: () {
-                                            removeFollower();
+                                            unfollowdialog();
                                           },
                                           child: Text("Unfollow"))
                                       : FlatButton(
