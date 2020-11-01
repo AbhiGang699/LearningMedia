@@ -66,7 +66,7 @@ class _FeedState extends State<Feed> {
     return FutureBuilder(
         future: _userfuture,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && _urls.length > 0) {
             return RefreshIndicator(
               onRefresh: refreshArticles,
               child: snapshot.data.length == 0
