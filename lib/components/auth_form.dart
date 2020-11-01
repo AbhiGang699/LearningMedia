@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/select_tag_screen.dart';
 import './image_input.dart';
 import 'package:image_picker/image_picker.dart';
 import '../helper/authentication.dart';
@@ -49,6 +50,14 @@ class _AuthFormState extends State<AuthForm> {
       );
       return null;
     }
+  }
+
+  void addTag() {
+    print("add tag");
+  }
+
+  void removeTag() {
+    print("remove tag");
   }
 
   void register(BuildContext context) async {
@@ -292,6 +301,13 @@ class _AuthFormState extends State<AuthForm> {
                         Divider(
                           height: 10,
                         ),
+                        if (!_isLogin)
+                          FlatButton(
+                              onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SelectTags(addTag, removeTag))),
+                              child: Text("Tap to select tags")),
                         _isloading
                             ? CircularProgressIndicator()
                             : RaisedButton.icon(
