@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/screens/redirect_screen.dart';
-import './screens/home_screen.dart';
+
 import './screens/auth_screen.dart';
 import 'screens/auth_screen.dart';
-import 'screens/home_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -17,6 +20,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Dubious',
+      themeMode: ThemeMode.light,
+      darkTheme: ThemeData.light(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
