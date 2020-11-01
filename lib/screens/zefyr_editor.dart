@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,7 +67,9 @@ class CreateNote extends State<EditorPage> {
       'username': widget._article['username'],
       'date': widget._article['date'],
       'time': widget._article['time'],
-      'caption': _controller.document.toPlainText().substring(0, 20) + '...'
+      'caption': _controller.document.toPlainText().substring(
+              0, max(20, _controller.document.toPlainText().length)) +
+          '...'
     });
     Navigator.of(context).pop();
     Navigator.of(context).pop();
