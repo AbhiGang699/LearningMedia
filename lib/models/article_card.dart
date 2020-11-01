@@ -242,7 +242,11 @@ class _ArticleCardState extends State<ArticleCard> {
                     ? MainAxisAlignment.end
                     : MainAxisAlignment.spaceBetween,
                 children: [
-                  if (!widget.doc.data['isApproved']) Text('Pending'),
+                  if (!widget.doc.data['isApproved'])
+                    Text(
+                      'Pending',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   SizedBox(
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                     CircleAvatar(
