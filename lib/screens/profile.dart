@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_complete_guide/helper/authentication.dart';
 import 'package:flutter_complete_guide/models/article_card.dart';
-import 'package:flutter_complete_guide/models/showFollowers.dart';
-import 'package:flutter_complete_guide/models/showFollowing.dart';
+import 'package:flutter_complete_guide/models/user_list.dart';
 
 class Profile extends StatefulWidget {
   final String uid;
@@ -24,12 +23,38 @@ class _ProfileState extends State<Profile> {
   bool _isCurrent = false;
   bool doesFollow = false;
   var showFollowers, showFollowing;
+  List<String> _followersList, _followingList;
+  final _obj = UserList();
 
   var _len = 0;
   List<DocumentSnapshot> _arti;
   bool isloading = true;
 
   DocumentSnapshot following;
+
+  Future<QuerySnapshot> getFollowersList() async {
+    QuerySnapshot _result =
+        await Firestore.instance.collection("follow").getDocuments();
+
+    final _temp = _result.documents;
+    _followersList = List<String>();
+    for (var i in _temp) {
+      for (var j in i.data.keys) {
+        if (j == _uid) _followersList.add(i.documentID);
+      }
+    }
+    return _result;
+  }
+
+  Future<DocumentSnapshot> getFollowingList() async {
+    DocumentSnapshot _doc =
+        await Firestore.instance.collection("follow").document(_uid).get();
+    _followingList = List<String>();
+    for (var i in _doc.data.keys) {
+      _followingList.add(i);
+    }
+    return _doc;
+  }
 
   Future<DocumentSnapshot> getFollowingCurrent() async {
     FirebaseUser us = await FirebaseAuth.instance.currentUser();
@@ -133,89 +158,115 @@ class _ProfileState extends State<Profile> {
     FirebaseAuth.instance.currentUser().then((value) => print(value.uid));
     return isloading
         ? Center(child: CircularProgressIndicator())
-        : Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                FittedBox(
-                  //make this into a fitted box later
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(url),
-                        backgroundColor: Colors.black,
-                      ),
-                      Text(
-                        name,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      if (_isCurrent == false)
+        : RefreshIndicator(
+            onRefresh: () {
+              getFollowersList();
+              getFollowingCurrent();
+              getArticles();
+              setState(() {});
+              return FirebaseAuth.instance.currentUser();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  FittedBox(
+                    //make this into a fitted box later
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(url),
+                          backgroundColor: Colors.black,
+                        ),
+                        Text(
+                          name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        if (_isCurrent == false)
+                          FutureBuilder(
+                              future: getFollowingCurrent(),
+                              builder: (context, snap) {
+                                if (snap.hasData) {
+                                  if (following.data != null)
+                                    for (var i in following.data.keys) {
+                                      if (i == _uid) doesFollow = true;
+                                    }
+                                }
+                                return snap.hasData
+                                    ? doesFollow
+                                        ? FlatButton(
+                                            onPressed: () {
+                                              unfollowdialog();
+                                            },
+                                            child: Text("Unfollow"))
+                                        : FlatButton(
+                                            onPressed: () {
+                                              addFollower();
+                                            },
+                                            child: Text("Follow"))
+                                    : CircularProgressIndicator();
+                              }),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
                         FutureBuilder(
-                            future: getFollowingCurrent(),
+                            future: getFollowersList(),
                             builder: (context, snap) {
                               if (snap.hasData) {
-                                if (following.data != null)
-                                  for (var i in following.data.keys) {
-                                    if (i == _uid) doesFollow = true;
-                                  }
+                                int _num = _followersList.length;
+                                return RaisedButton(
+                                  child: Text(_num.toString() + ' followers'),
+                                  onPressed: () =>
+                                      _obj.showList(context, _followersList),
+                                );
+                              } else {
+                                return RaisedButton(
+                                    child: Text('fetching...'),
+                                    onPressed: () {});
                               }
-                              return snap.hasData
-                                  ? doesFollow
-                                      ? FlatButton(
-                                          onPressed: () {
-                                            unfollowdialog();
-                                          },
-                                          child: Text("Unfollow"))
-                                      : FlatButton(
-                                          onPressed: () {
-                                            addFollower();
-                                          },
-                                          child: Text("Follow"))
-                                  : CircularProgressIndicator();
                             }),
-                    ],
+                        FutureBuilder(
+                            future: getFollowingList(),
+                            builder: (context, snap) {
+                              if (snap.hasData) {
+                                int _num = _followingList.length;
+                                return RaisedButton(
+                                  child: Text(_num.toString() +
+                                      ' following' +
+                                      (_num != 1 ? 's' : ' ')),
+                                  onPressed: () =>
+                                      _obj.showList(context, _followingList),
+                                );
+                              } else {
+                                return RaisedButton(
+                                    child: Text("fetching..."),
+                                    onPressed: () {});
+                              }
+                            }),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      RaisedButton(
-                        onPressed: () {
-                          showFollowers = new ShowFollowers(_uid);
-                          showFollowers.getFollowers(context);
-                        },
-                        child: Text("Followers"),
-                      ),
-                      RaisedButton(
-                        child: Text("Following"),
-                        onPressed: () {
-                          showFollowing = new ShowFollowing(_uid);
-                          showFollowing.getFollowing(context);
-                        },
-                      )
-                    ],
+                  Divider(
+                    thickness: 2,
+                    indent: 15,
+                    endIndent: 15,
+                    height: 20,
                   ),
-                ),
-                Divider(
-                  thickness: 2,
-                  indent: 15,
-                  endIndent: 15,
-                  height: 20,
-                ),
-                Expanded(
-                  child: Center(
-                    child: FutureBuilder(
-                        future: getArticles(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return RefreshIndicator(
-                              onRefresh: getArticles,
-                              child: _arti.length == 0
+                  Expanded(
+                    child: Center(
+                      child: FutureBuilder(
+                          future: getArticles(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return _arti.length == 0
                                   ? Center(child: Text("No Articles to Show "))
                                   : ListView.builder(
                                       itemBuilder: (context, index) {
@@ -223,15 +274,15 @@ class _ProfileState extends State<Profile> {
                                             _isCurrent, url, false, false);
                                       },
                                       itemCount: _arti.length,
-                                    ),
-                            );
-                          } else {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                        }),
+                                    );
+                            } else {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                          }),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
   }
