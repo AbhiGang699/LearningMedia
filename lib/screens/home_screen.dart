@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/bookmark_screen.dart';
 
 import './zefyr_editor.dart';
 import 'feed.dart';
@@ -24,7 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Feed(),
       ),
       Center(
-        child: Text("jj"),
+        child: BookmarkScreen(),
+
       ),
       Center(
         child: Profile(_uid),
@@ -49,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text('Yes'),
                           onPressed: () {
                             FirebaseAuth.instance.signOut();
-                            Navigator.of(context).pop();
                           },
                         ),
                         TextButton(
@@ -97,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.youtube_searched_for),
-            label: "Explore",
+            icon: Icon(Icons.star_half),
+            label: "Bookmarks",
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
